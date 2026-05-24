@@ -405,6 +405,37 @@
         line-height: 1.45;
       }
 
+      .credit-bar {
+        margin-top: 10px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .credit-text {
+        font-size: 0.78rem;
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      .credit-link {
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid var(--accent-line);
+        border-radius: 999px;
+        padding: 5px 10px;
+        font-size: 0.74rem;
+        font-weight: 700;
+        color: var(--text);
+        background: var(--accent-soft);
+        text-decoration: none;
+      }
+
+      .credit-link:hover {
+        filter: brightness(1.08);
+      }
+
       .top-row {
         margin-top: 16px;
         display: grid;
@@ -1340,6 +1371,10 @@
               <span class="pill">Cyber Threat Radar</span>
               <h1>MADERO INFONEWS</h1>
               <p class="subtitle">Notícias de segurança da informação com classificação automática e atualização contínua.</p>
+              <div class="credit-bar">
+                <span class="credit-text">Marco Lima - Analista de Infraestrutura Senior</span>
+                <a class="credit-link" href="https://www.linkedin.com/in/marcollima/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+              </div>
             </div>
           </div>
           <div class="top-actions">
@@ -1508,7 +1543,6 @@
           </table>
         </div>
       </section>
-      <p class="status">Créditos: Marco Lima - Analista de Infraestrutura Senior</p>
     </main>
 
     <script>
