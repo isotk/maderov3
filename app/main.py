@@ -116,7 +116,7 @@ def _effective_source_meta(source_id: str) -> Dict[str, object]:
     return {
         "confidence": override.get("confidence", base.get("confidence", "media")),
         "relevance": override.get("relevance", base.get("relevance", "media")),
-        "profiles": profiles if isinstance(profiles, list) and profiles else base.get("profiles", ["balanced", "wide"]),
+        "profiles": profiles if isinstance(profiles, list) and profiles else base.get("profiles", ["strict", "balanced", "wide"]),
         "tags": tags if isinstance(tags, list) else base.get("tags", []),
     }
 
@@ -497,7 +497,7 @@ async def home() -> FileResponse:
 
 
 @app.get("/sources")
-async def sources(source_profile: str = Query(default="balanced", pattern="^(strict|balanced|wide)$")) -> dict:
+async def sources(source_profile: str = Query(default="strict", pattern="^(strict|balanced|wide)$")) -> dict:
     visible_sources = [source for source in SOURCE_REGISTRY if source_profile in _effective_source_meta(source.id).get("profiles", [])]
     return {
         "sources": [
@@ -516,7 +516,7 @@ async def sources(source_profile: str = Query(default="balanced", pattern="^(str
 
 
 @app.get("/sources/stats")
-async def source_stats(source_profile: str = Query(default="balanced", pattern="^(strict|balanced|wide)$")) -> dict:
+async def source_stats(source_profile: str = Query(default="strict", pattern="^(strict|balanced|wide)$")) -> dict:
     visible_sources = [source for source in SOURCE_REGISTRY if source_profile in _effective_source_meta(source.id).get("profiles", [])]
     stats: Dict[str, dict] = {
         source.id: {
@@ -662,7 +662,7 @@ async def news(
     cve: Optional[str] = Query(default=None),
     q: Optional[str] = Query(default=None),
     ptbr: bool = Query(default=False),
-    source_profile: str = Query(default="balanced", pattern="^(strict|balanced|wide)$"),
+    source_profile: str = Query(default="strict", pattern="^(strict|balanced|wide)$"),
     osint_area: Optional[str] = Query(default=None),
     timeout_seconds: int = Query(12, ge=3, le=60),
 ) -> List[NewsItem]:

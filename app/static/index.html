@@ -1402,7 +1402,7 @@
            </div>
           <select id="compact-profile">
             <option value="strict">Estrito</option>
-            <option value="balanced" selected>Balanceado</option>
+            <option value="balanced">Balanceado</option>
             <option value="wide">Amplo</option>
           </select>
           <button id="compact-reload" class="compact-btn" type="button">Atualizar</button>
@@ -1443,8 +1443,8 @@
             <label class="field-small">
               Perfil de fontes
               <select id="source-profile">
-                <option value="strict">Estrito</option>
-                <option value="balanced" selected>Balanceado</option>
+                <option value="strict" selected>Estrito</option>
+                <option value="balanced">Balanceado</option>
                 <option value="wide">Amplo</option>
               </select>
             </label>
@@ -1880,7 +1880,7 @@
 
 
       function setQuickProfile(profile) {
-        const normalized = ["strict", "balanced", "wide"].includes(profile) ? profile : "balanced";
+        const normalized = ["strict", "balanced", "wide"].includes(profile) ? profile : "strict";
         if (sourceProfileEl.value !== normalized) {
           sourceProfileEl.value = normalized;
           compactProfileEl.value = normalized;
@@ -1890,7 +1890,7 @@
       }
 
       function syncCompactFromMain() {
-        compactProfileEl.value = sourceProfileEl.value || "balanced";
+        compactProfileEl.value = sourceProfileEl.value || "strict";
         const map = {
           "": "all",
           Microsoft: "microsoft",
@@ -1974,7 +1974,7 @@
         const category = categoryEl.value.trim();
         const source = sourceEl.value.trim();
         const q = queryEl.value.trim();
-        const sourceProfile = sourceProfileEl.value.trim() || "balanced";
+        const sourceProfile = sourceProfileEl.value.trim() || "strict";
         const osintArea = osintAreaEl.value.trim();
 
         const params = new URLSearchParams({ limit: String(limit), hours: String(hours) });
@@ -2041,7 +2041,7 @@
 
       async function loadSources() {
         try {
-          const response = await fetch(`/sources?source_profile=${encodeURIComponent(sourceProfileEl.value || "balanced")}`);
+          const response = await fetch(`/sources?source_profile=${encodeURIComponent(sourceProfileEl.value || "strict")}`);
           if (!response.ok) return;
           const data = await response.json();
           const sources = Array.isArray(data.sources) ? data.sources : [];
@@ -2053,7 +2053,7 @@
 
       async function loadSourceStats() {
         try {
-          const response = await fetch(`/sources/stats?source_profile=${encodeURIComponent(sourceProfileEl.value || "balanced")}`);
+          const response = await fetch(`/sources/stats?source_profile=${encodeURIComponent(sourceProfileEl.value || "strict")}`);
           if (!response.ok) return;
           const data = await response.json();
           const rows = Array.isArray(data.sources) ? data.sources : [];
@@ -2156,7 +2156,7 @@
           if (!id) continue;
           const confidence = tr.querySelector('[data-field="confidence"]')?.value || "media";
           const relevance = tr.querySelector('[data-field="relevance"]')?.value || "media";
-          const profiles = parseListCell(tr.querySelector('[data-field="profiles"]')?.value || "balanced,wide");
+          const profiles = parseListCell(tr.querySelector('[data-field="profiles"]')?.value || "strict,balanced,wide");
           const tags = parseListCell(tr.querySelector('[data-field="tags"]')?.value || "");
           payload.push({ id, confidence, relevance, profiles, tags });
         }
@@ -2224,7 +2224,7 @@
         categoryEl.value = "";
         sourceEl.value = "";
         queryEl.value = "";
-        sourceProfileEl.value = "balanced";
+        sourceProfileEl.value = "strict";
         osintAreaEl.value = "";
         clusterToggleEl.checked = false;
         localStorage.setItem("ui_cluster_mode", "0");
@@ -2245,7 +2245,7 @@
         loadNews();
       });
       quickAllEl.addEventListener("click", () => {
-        setQuickProfile("balanced");
+        setQuickProfile("strict");
         quickSourceFilter = "";
         quickFilterLabel = "";
         quickQueryFilter = "";
@@ -2259,7 +2259,7 @@
         loadNews();
       });
       quickMicrosoftEl.addEventListener("click", () => {
-        setQuickProfile("balanced");
+        setQuickProfile("strict");
         quickQueryFilter = "";
         quickSourceFilter = [
           "msrc",
@@ -2279,7 +2279,7 @@
         loadNews();
       });
       quickLinuxEl.addEventListener("click", () => {
-        setQuickProfile("balanced");
+        setQuickProfile("strict");
         quickSourceFilter = "";
         quickQueryFilter = "linux ubuntu debian red hat rhel suse kernel openssl nginx openssh";
         quickFilterLabel = "Linux";
@@ -2293,7 +2293,7 @@
         loadNews();
       });
       quickAppleEl.addEventListener("click", () => {
-        setQuickProfile("balanced");
+        setQuickProfile("strict");
         quickSourceFilter = "";
         quickQueryFilter = "apple ios macos ipados safari xcode";
         quickFilterLabel = "Apple";
@@ -2328,7 +2328,7 @@
         loadNews();
       });
       quickOsintEl.addEventListener("click", () => {
-        setQuickProfile("balanced");
+        setQuickProfile("strict");
         quickSourceFilter = "";
         quickQueryFilter = "osint open source intelligence reconnaissance google dork shodan censys whois dns subdomain geolocation exif metadata username email";
         quickFilterLabel = "OSINT";

@@ -45,7 +45,7 @@ def source_meta(source_id: str) -> Dict[str, object]:
     base = {
         "confidence": "media",
         "relevance": "alta",
-        "profiles": ["balanced", "wide"],
+        "profiles": ["strict", "balanced", "wide"],
         "tags": [],
     }
     custom = SOURCE_CLASSIFICATION.get(source_id, {})
