@@ -179,7 +179,7 @@
 
       .compact-quick {
         display: grid;
-        grid-template-columns: repeat(6, minmax(0, 1fr));
+        grid-template-columns: repeat(7, minmax(0, 1fr));
         gap: 3px;
         align-items: center;
         border: 1px solid var(--line);
@@ -1333,7 +1333,7 @@
 
         .compact-quick {
           grid-column: span 2;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
+          grid-template-columns: repeat(4, minmax(0, 1fr));
         }
 
         .brand-row {
@@ -1384,6 +1384,14 @@
               <option value="analytic" selected>Modo analitico</option>
               <option value="compact">Modo compacto</option>
             </select>
+            <a
+              id="cybermap-link"
+              class="gov-toggle-btn"
+              href="https://cybermap.kaspersky.com/pt"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Abrir mapa global de ameacas"
+            >Cybermap</a>
             <button id="gov-toggle" class="gov-toggle-btn" type="button">Governanca</button>
             <button id="tone-toggle" class="icon-btn" type="button" aria-label="Alternar cor" title="Alternar cor">
               <span aria-hidden="true">🌓</span>
@@ -1399,7 +1407,8 @@
              <button class="compact-quick-btn" type="button" data-compact="apple" data-label="Apple" title="Apple">Apple</button>
              <button class="compact-quick-btn" type="button" data-compact="x" data-label="X" title="X">X</button>
              <button class="compact-quick-btn" type="button" data-compact="osint" data-label="OSINT" title="OSINT">OSINT</button>
-           </div>
+             <button class="compact-quick-btn" type="button" data-compact="defensive" data-label="Defensiva" title="Seguranca Defensiva">Defensiva</button>
+            </div>
           <select id="compact-profile">
             <option value="strict">Estrito</option>
             <option value="balanced">Balanceado</option>
@@ -1415,6 +1424,7 @@
           <button id="quick-apple" class="quick-filter-btn" type="button">Somente Apple</button>
           <button id="quick-x" class="quick-filter-btn" type="button">Somente X</button>
           <button id="quick-osint" class="quick-filter-btn" type="button">Somente OSINT</button>
+          <button id="quick-defensive" class="quick-filter-btn" type="button">Somente Defensiva</button>
         </div>
         <div class="top-row">
           <div class="controls">
@@ -1571,6 +1581,7 @@
       const quickAppleEl = document.getElementById("quick-apple");
       const quickXEl = document.getElementById("quick-x");
       const quickOsintEl = document.getElementById("quick-osint");
+      const quickDefensiveEl = document.getElementById("quick-defensive");
       const compactQuickEl = document.getElementById("compact-quick");
       const compactProfileEl = document.getElementById("compact-profile");
       const compactReloadEl = document.getElementById("compact-reload");
@@ -1898,6 +1909,7 @@
           Apple: "apple",
           X: "x",
           OSINT: "osint",
+          Defensiva: "defensive",
         };
         const active = map[quickFilterLabel] || "all";
         for (const btn of compactQuickEl.querySelectorAll(".compact-quick-btn")) {
@@ -2240,6 +2252,7 @@
         quickAppleEl.classList.remove("active");
         quickXEl.classList.remove("active");
         quickOsintEl.classList.remove("active");
+        quickDefensiveEl.classList.remove("active");
         applyTheme("dark");
         syncCompactFromMain();
         loadNews();
@@ -2255,6 +2268,7 @@
         quickAppleEl.classList.remove("active");
         quickXEl.classList.remove("active");
         quickOsintEl.classList.remove("active");
+        quickDefensiveEl.classList.remove("active");
         syncCompactFromMain();
         loadNews();
       });
@@ -2275,6 +2289,7 @@
         quickAppleEl.classList.remove("active");
         quickXEl.classList.remove("active");
         quickOsintEl.classList.remove("active");
+        quickDefensiveEl.classList.remove("active");
         syncCompactFromMain();
         loadNews();
       });
@@ -2289,6 +2304,7 @@
         quickAppleEl.classList.remove("active");
         quickXEl.classList.remove("active");
         quickOsintEl.classList.remove("active");
+        quickDefensiveEl.classList.remove("active");
         syncCompactFromMain();
         loadNews();
       });
@@ -2303,6 +2319,7 @@
         quickLinuxEl.classList.remove("active");
         quickXEl.classList.remove("active");
         quickOsintEl.classList.remove("active");
+        quickDefensiveEl.classList.remove("active");
         syncCompactFromMain();
         loadNews();
       });
@@ -2312,8 +2329,6 @@
           "x-msftsecresponse",
           "x-cisagov",
           "x-thehackernews",
-          "x-swiftonsecurity",
-          "x-google-cloud-tech",
           "x-crowdstrike",
         ].join(",");
         quickQueryFilter = "";
@@ -2324,6 +2339,7 @@
         quickLinuxEl.classList.remove("active");
         quickAppleEl.classList.remove("active");
         quickOsintEl.classList.remove("active");
+        quickDefensiveEl.classList.remove("active");
         syncCompactFromMain();
         loadNews();
       });
@@ -2338,6 +2354,22 @@
         quickLinuxEl.classList.remove("active");
         quickAppleEl.classList.remove("active");
         quickXEl.classList.remove("active");
+        quickDefensiveEl.classList.remove("active");
+        syncCompactFromMain();
+        loadNews();
+      });
+      quickDefensiveEl.addEventListener("click", () => {
+        setQuickProfile("strict");
+        quickSourceFilter = "";
+        quickQueryFilter = "soc siem edr xdr detection hardening incident response threat hunting blue team yara sigma mitre att&ck";
+        quickFilterLabel = "Defensiva";
+        quickDefensiveEl.classList.add("active");
+        quickAllEl.classList.remove("active");
+        quickMicrosoftEl.classList.remove("active");
+        quickLinuxEl.classList.remove("active");
+        quickAppleEl.classList.remove("active");
+        quickXEl.classList.remove("active");
+        quickOsintEl.classList.remove("active");
         syncCompactFromMain();
         loadNews();
       });
@@ -2396,6 +2428,7 @@
         else if (action === "apple") quickAppleEl.click();
         else if (action === "x") quickXEl.click();
         else if (action === "osint") quickOsintEl.click();
+        else if (action === "defensive") quickDefensiveEl.click();
         else quickAllEl.click();
       });
       compactReloadEl.addEventListener("click", () => {

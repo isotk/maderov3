@@ -42,6 +42,24 @@ CATEGORY_RULES = [
     CategoryRule("Data Breach", ["data breach", "data leak", "leaked", "exposed data", "compromised"]),
     CategoryRule("Cloud Security", ["cloud", "aws", "azure", "gcp", "kubernetes", "container"]),
     CategoryRule("Threat Intelligence", ["apt", "ioc", "threat actor", "campaign", "attribution"]),
+    CategoryRule(
+        "Seguranca Defensiva",
+        [
+            "soc",
+            "siem",
+            "edr",
+            "xdr",
+            "detection",
+            "detection engineering",
+            "incident response",
+            "hardening",
+            "blue team",
+            "threat hunting",
+            "sigma rule",
+            "yara",
+            "mitre att&ck",
+        ],
+    ),
     CategoryRule("Governança e Compliance", ["compliance", "gdpr", "lgpd", "regulation", "policy"]),
 ]
 

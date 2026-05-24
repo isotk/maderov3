@@ -5,7 +5,9 @@ import contextlib
 import csv
 import io
 import json
+import logging
 import re
+import time
 from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
@@ -61,6 +63,13 @@ POLICIES_JSON = BASE_DIR / "source_policies.json"
 REFRESH_INTERVAL_SECONDS = 300
 MAX_CACHE_ITEMS = 600
 MAX_ITEMS_PER_SOURCE = 80
+CURATION_WINDOW_DAYS = 7
+CURATION_MIN_ITEMS = 5
+CURATION_MIN_RELEVANCE_RATIO = 0.35
+
+logger = logging.getLogger("infosec-news-agent")
+if not logger.handlers:
+    logging.basicConfig(level=logging.INFO)
 
 _cached_news: List[NewsItem] = []
 _last_refresh_at: Optional[datetime] = None
@@ -70,6 +79,19 @@ _refresh_task: Optional[asyncio.Task] = None
 CVE_PATTERN = re.compile(r"\bCVE-\d{4}-\d{4,7}\b", re.IGNORECASE)
 _translation_cache: Dict[str, str] = {}
 _source_policy_overrides: Dict[str, dict] = {}
+_metrics: Dict[str, object] = {
+    "refresh_runs": 0,
+    "feeds_total": 0,
+    "feeds_ok": 0,
+    "feeds_fail": 0,
+    "items_ingested": 0,
+    "items_deduped": 0,
+    "items_cached": 0,
+    "dedupe_rate": 0.0,
+    "last_refresh_ms": 0,
+    "last_refresh_at": None,
+    "last_errors": [],
+}
 OSINT_AREA_KEYWORDS: Dict[str, List[str]] = {
     "username": ["username", "alias", "handle", "whatsmyname", "sherlock"],
     "email": ["email", "mail", "ghunt", "holehe", "hibp"],
@@ -84,6 +106,51 @@ app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 
 def _safe_text(value: Optional[str]) -> str:
     return (value or "").strip()
+
+
+def _is_infosec_relevant(item: NewsItem) -> bool:
+    category = (item.category or "").strip().lower()
+    if category and category != "geral":
+        return True
+    blob = f"{item.title} {item.summary}".lower()
+    key_terms = [
+        "cve-",
+        "ransomware",
+        "malware",
+        "phishing",
+        "exploit",
+        "vulnerability",
+        "threat",
+        "siem",
+        "soc",
+        "edr",
+        "xdr",
+        "incident response",
+    ]
+    return any(term in blob for term in key_terms)
+
+
+def _curated_source_ids(items: List[NewsItem], now: datetime) -> set[str]:
+    cutoff = now - timedelta(days=CURATION_WINDOW_DAYS)
+    counters: Dict[str, Dict[str, int]] = {}
+
+    for item in items:
+        if item.published_at < cutoff:
+            continue
+        row = counters.setdefault(item.source_id, {"total": 0, "relevant": 0})
+        row["total"] += 1
+        if _is_infosec_relevant(item):
+            row["relevant"] += 1
+
+    muted = set()
+    for source_id, row in counters.items():
+        total = row["total"]
+        if total < CURATION_MIN_ITEMS:
+            continue
+        ratio = row["relevant"] / max(total, 1)
+        if ratio < CURATION_MIN_RELEVANCE_RATIO:
+            muted.add(source_id)
+    return muted
 
 
 def _load_source_policy_overrides() -> Dict[str, dict]:
@@ -434,9 +501,10 @@ def _dedupe_and_sort(items: List[NewsItem]) -> List[NewsItem]:
 
 
 async def _refresh_news_cache(timeout_seconds: int = 15) -> None:
-    global _cached_news, _last_refresh_at, _last_refresh_errors
+    global _cached_news, _last_refresh_at, _last_refresh_errors, _metrics
 
     async with _refresh_lock:
+        t0 = time.perf_counter()
         active_sources = [source for source in SOURCE_REGISTRY if source.feed_url]
         async with httpx.AsyncClient(follow_redirects=True) as client:
             tasks = [_fetch_source(source, timeout_seconds=timeout_seconds, client=client) for source in active_sources]
@@ -457,6 +525,45 @@ async def _refresh_news_cache(timeout_seconds: int = 15) -> None:
 
         _last_refresh_at = datetime.now(timezone.utc)
         _last_refresh_errors = errors
+
+        feeds_total = len(active_sources)
+        feeds_fail = len(errors)
+        feeds_ok = max(0, feeds_total - feeds_fail)
+        ingested = len(all_items)
+        deduped = max(0, ingested - len(sorted_items))
+        dedupe_rate = round((deduped / ingested), 4) if ingested else 0.0
+        refresh_ms = int((time.perf_counter() - t0) * 1000)
+
+        _metrics.update(
+            {
+                "refresh_runs": int(_metrics.get("refresh_runs", 0)) + 1,
+                "feeds_total": feeds_total,
+                "feeds_ok": feeds_ok,
+                "feeds_fail": feeds_fail,
+                "items_ingested": ingested,
+                "items_deduped": deduped,
+                "items_cached": len(_cached_news),
+                "dedupe_rate": dedupe_rate,
+                "last_refresh_ms": refresh_ms,
+                "last_refresh_at": _last_refresh_at,
+                "last_errors": errors[:20],
+            }
+        )
+        logger.info(
+            json.dumps(
+                {
+                    "event": "refresh_complete",
+                    "feeds_total": feeds_total,
+                    "feeds_ok": feeds_ok,
+                    "feeds_fail": feeds_fail,
+                    "items_ingested": ingested,
+                    "items_cached": len(_cached_news),
+                    "dedupe_rate": dedupe_rate,
+                    "last_refresh_ms": refresh_ms,
+                },
+                ensure_ascii=False,
+            )
+        )
 
 
 async def _refresh_loop() -> None:
@@ -488,7 +595,22 @@ async def shutdown() -> None:
 
 @app.get("/health")
 async def health() -> dict:
-    return {"status": "ok", "service": "infosec-news-agent"}
+    return {
+        "status": "ok",
+        "service": "infosec-news-agent",
+        "last_refresh_at": _last_refresh_at,
+        "feeds_ok": _metrics.get("feeds_ok", 0),
+        "feeds_total": _metrics.get("feeds_total", 0),
+    }
+
+
+@app.get("/metrics")
+async def metrics() -> dict:
+    return {
+        "service": "infosec-news-agent",
+        "refresh": _metrics,
+        "last_refresh_errors": _last_refresh_errors,
+    }
 
 
 @app.get("/", include_in_schema=False)
@@ -689,6 +811,9 @@ async def news(
         for source in SOURCE_REGISTRY
         if source_profile in _effective_source_meta(source.id).get("profiles", [])
     }
+    muted_source_ids = _curated_source_ids(_cached_news, now)
+    if muted_source_ids:
+        allowed_source_ids = {source_id for source_id in allowed_source_ids if source_id not in muted_source_ids}
     filtered = [item for item in filtered if item.source_id in allowed_source_ids]
 
     normalized_category = _normalize_optional_text(category)

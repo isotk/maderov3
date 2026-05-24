@@ -27,16 +27,11 @@ SOURCE_CLASSIFICATION: Dict[str, Dict[str, object]] = {
     "checkpoint-research": {"confidence": "alta", "relevance": "alta", "profiles": ["strict", "balanced", "wide"], "tags": ["research", "threat-intel"]},
     "project-zero": {"confidence": "alta", "relevance": "alta", "profiles": ["strict", "balanced", "wide"], "tags": ["research", "vuln"]},
     "virustotal-blog": {"confidence": "alta", "relevance": "alta", "profiles": ["strict", "balanced", "wide"], "tags": ["research", "osint"]},
-    "bellingcat": {"confidence": "alta", "relevance": "media", "profiles": ["balanced", "wide"], "tags": ["osint", "geo"]},
-    "osintcurio": {"confidence": "alta", "relevance": "media", "profiles": ["balanced", "wide"], "tags": ["osint", "methodology"]},
-    "sector035": {"confidence": "media", "relevance": "media", "profiles": ["wide"], "tags": ["osint", "tooling"]},
     "maltego-blog": {"confidence": "alta", "relevance": "media", "profiles": ["balanced", "wide"], "tags": ["osint", "tooling"]},
     "spiderfoot-blog": {"confidence": "alta", "relevance": "media", "profiles": ["balanced", "wide"], "tags": ["osint", "tooling"]},
     "x-msftsecresponse": {"confidence": "media", "relevance": "media", "profiles": ["wide"], "tags": ["social", "microsoft"]},
     "x-cisagov": {"confidence": "media", "relevance": "media", "profiles": ["wide"], "tags": ["social", "official"]},
     "x-thehackernews": {"confidence": "media", "relevance": "media", "profiles": ["wide"], "tags": ["social", "media"]},
-    "x-swiftonsecurity": {"confidence": "media", "relevance": "media", "profiles": ["wide"], "tags": ["social", "osint"]},
-    "x-google-cloud-tech": {"confidence": "media", "relevance": "media", "profiles": ["wide"], "tags": ["social", "cloud"]},
     "x-crowdstrike": {"confidence": "media", "relevance": "media", "profiles": ["wide"], "tags": ["social", "threat-intel"]},
 }
 
@@ -115,16 +110,11 @@ SOURCE_REGISTRY: List[SourceConfig] = [
     SourceConfig("netspi-blog", "NetSPI Blog", "https://www.netspi.com/blog", "https://www.netspi.com/blog/feed/"),
     SourceConfig("intezer-blog", "Intezer Blog", "https://intezer.com/blog", "https://intezer.com/blog/feed/"),
     SourceConfig("virustotal-blog", "VirusTotal Blog", "https://blog.virustotal.com", "https://blog.virustotal.com/feeds/posts/default"),
-    SourceConfig("bellingcat", "Bellingcat", "https://www.bellingcat.com", "https://www.bellingcat.com/feed/"),
-    SourceConfig("osintcurio", "OSINTCurio.us", "https://osintcurio.us", "https://osintcurio.us/feed/"),
-    SourceConfig("sector035", "Sector035", "https://sector035.nl", "https://sector035.nl/feed/"),
     SourceConfig("maltego-blog", "Maltego Blog", "https://www.maltego.com/blog", "https://www.maltego.com/blog/feed/"),
     SourceConfig("spiderfoot-blog", "SpiderFoot Blog", "https://www.spiderfoot.net/blog", "https://www.spiderfoot.net/blog/feed/"),
 
     SourceConfig("x-msftsecresponse", "X - MSFT Security Response", "https://x.com/msftsecresponse", "https://nitter.net/msftsecresponse/rss"),
     SourceConfig("x-cisagov", "X - CISA", "https://x.com/CISAgov", "https://nitter.net/CISAgov/rss"),
     SourceConfig("x-thehackernews", "X - The Hacker News", "https://x.com/thehackersnews", "https://nitter.net/thehackersnews/rss"),
-    SourceConfig("x-swiftonsecurity", "X - SwiftOnSecurity", "https://x.com/SwiftOnSecurity", "https://nitter.net/SwiftOnSecurity/rss"),
-    SourceConfig("x-google-cloud-tech", "X - Google Cloud Tech", "https://x.com/googlecloudtech", "https://nitter.net/googlecloudtech/rss"),
     SourceConfig("x-crowdstrike", "X - CrowdStrike", "https://x.com/CrowdStrike", "https://nitter.net/CrowdStrike/rss"),
 ]
