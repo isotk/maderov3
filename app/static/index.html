@@ -179,7 +179,7 @@
 
       .compact-quick {
         display: grid;
-        grid-template-columns: repeat(7, minmax(0, 1fr));
+        grid-template-columns: repeat(8, minmax(0, 1fr));
         gap: 3px;
         align-items: center;
         border: 1px solid var(--line);
@@ -1460,6 +1460,7 @@
              <button class="compact-quick-btn" type="button" data-compact="x" data-label="X" title="X">X</button>
              <button class="compact-quick-btn" type="button" data-compact="osint" data-label="OSINT" title="OSINT">OSINT</button>
              <button class="compact-quick-btn" type="button" data-compact="defensive" data-label="Defensiva" title="Seguranca Defensiva">Defensiva</button>
+             <button class="compact-quick-btn" type="button" data-compact="darkweb" data-label="Dark Web" title="Dark Web">Dark Web</button>
             </div>
           <select id="compact-profile">
             <option value="strict">Estrito</option>
@@ -1477,6 +1478,7 @@
           <button id="quick-x" class="quick-filter-btn" type="button">Somente X</button>
           <button id="quick-osint" class="quick-filter-btn" type="button">Somente OSINT</button>
           <button id="quick-defensive" class="quick-filter-btn" type="button">Somente Defensiva</button>
+          <button id="quick-darkweb" class="quick-filter-btn" type="button">Somente Dark Web</button>
         </div>
         <div class="threat-map-panel">
           <div class="threat-map-head">
@@ -1647,6 +1649,7 @@
       const quickXEl = document.getElementById("quick-x");
       const quickOsintEl = document.getElementById("quick-osint");
       const quickDefensiveEl = document.getElementById("quick-defensive");
+      const quickDarkwebEl = document.getElementById("quick-darkweb");
       const compactQuickEl = document.getElementById("compact-quick");
       const compactProfileEl = document.getElementById("compact-profile");
       const compactReloadEl = document.getElementById("compact-reload");
@@ -1975,6 +1978,7 @@
           X: "x",
           OSINT: "osint",
           Defensiva: "defensive",
+          "Dark Web": "darkweb",
         };
         const active = map[quickFilterLabel] || "all";
         for (const btn of compactQuickEl.querySelectorAll(".compact-quick-btn")) {
@@ -2318,6 +2322,7 @@
         quickXEl.classList.remove("active");
         quickOsintEl.classList.remove("active");
         quickDefensiveEl.classList.remove("active");
+        quickDarkwebEl.classList.remove("active");
         applyTheme("dark");
         syncCompactFromMain();
         loadNews();
@@ -2334,6 +2339,7 @@
         quickXEl.classList.remove("active");
         quickOsintEl.classList.remove("active");
         quickDefensiveEl.classList.remove("active");
+        quickDarkwebEl.classList.remove("active");
         syncCompactFromMain();
         loadNews();
       });
@@ -2355,6 +2361,7 @@
         quickXEl.classList.remove("active");
         quickOsintEl.classList.remove("active");
         quickDefensiveEl.classList.remove("active");
+        quickDarkwebEl.classList.remove("active");
         syncCompactFromMain();
         loadNews();
       });
@@ -2370,6 +2377,7 @@
         quickXEl.classList.remove("active");
         quickOsintEl.classList.remove("active");
         quickDefensiveEl.classList.remove("active");
+        quickDarkwebEl.classList.remove("active");
         syncCompactFromMain();
         loadNews();
       });
@@ -2385,6 +2393,7 @@
         quickXEl.classList.remove("active");
         quickOsintEl.classList.remove("active");
         quickDefensiveEl.classList.remove("active");
+        quickDarkwebEl.classList.remove("active");
         syncCompactFromMain();
         loadNews();
       });
@@ -2405,6 +2414,7 @@
         quickAppleEl.classList.remove("active");
         quickOsintEl.classList.remove("active");
         quickDefensiveEl.classList.remove("active");
+        quickDarkwebEl.classList.remove("active");
         syncCompactFromMain();
         loadNews();
       });
@@ -2420,6 +2430,7 @@
         quickAppleEl.classList.remove("active");
         quickXEl.classList.remove("active");
         quickDefensiveEl.classList.remove("active");
+        quickDarkwebEl.classList.remove("active");
         syncCompactFromMain();
         loadNews();
       });
@@ -2435,6 +2446,23 @@
         quickAppleEl.classList.remove("active");
         quickXEl.classList.remove("active");
         quickOsintEl.classList.remove("active");
+        quickDarkwebEl.classList.remove("active");
+        syncCompactFromMain();
+        loadNews();
+      });
+      quickDarkwebEl.addEventListener("click", () => {
+        setQuickProfile("strict");
+        quickSourceFilter = ["ransomware-live", "security-affairs", "the-record", "bleepingcomputer"].join(",");
+        quickQueryFilter = "dark web darkweb .onion onion site tor network leak site ransomware leak stolen credentials underground forum initial access broker";
+        quickFilterLabel = "Dark Web";
+        quickDarkwebEl.classList.add("active");
+        quickAllEl.classList.remove("active");
+        quickMicrosoftEl.classList.remove("active");
+        quickLinuxEl.classList.remove("active");
+        quickAppleEl.classList.remove("active");
+        quickXEl.classList.remove("active");
+        quickOsintEl.classList.remove("active");
+        quickDefensiveEl.classList.remove("active");
         syncCompactFromMain();
         loadNews();
       });
@@ -2494,6 +2522,7 @@
         else if (action === "x") quickXEl.click();
         else if (action === "osint") quickOsintEl.click();
         else if (action === "defensive") quickDefensiveEl.click();
+        else if (action === "darkweb") quickDarkwebEl.click();
         else quickAllEl.click();
       });
       compactReloadEl.addEventListener("click", () => {

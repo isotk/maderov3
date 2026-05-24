@@ -27,6 +27,8 @@ SOURCE_CLASSIFICATION: Dict[str, Dict[str, object]] = {
     "checkpoint-research": {"confidence": "alta", "relevance": "alta", "profiles": ["strict", "balanced", "wide"], "tags": ["research", "threat-intel"]},
     "project-zero": {"confidence": "alta", "relevance": "alta", "profiles": ["strict", "balanced", "wide"], "tags": ["research", "vuln"]},
     "virustotal-blog": {"confidence": "alta", "relevance": "alta", "profiles": ["strict", "balanced", "wide"], "tags": ["research", "osint"]},
+    "ransomware-live": {"confidence": "alta", "relevance": "alta", "profiles": ["strict", "balanced", "wide"], "tags": ["darkweb", "ransomware", "leak"]},
+    "security-affairs": {"confidence": "alta", "relevance": "alta", "profiles": ["strict", "balanced", "wide"], "tags": ["darkweb", "threat-intel"]},
     "maltego-blog": {"confidence": "alta", "relevance": "media", "profiles": ["balanced", "wide"], "tags": ["osint", "tooling"]},
     "spiderfoot-blog": {"confidence": "alta", "relevance": "media", "profiles": ["balanced", "wide"], "tags": ["osint", "tooling"]},
     "x-msftsecresponse": {"confidence": "media", "relevance": "media", "profiles": ["wide"], "tags": ["social", "microsoft"]},

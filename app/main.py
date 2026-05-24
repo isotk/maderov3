@@ -6,6 +6,7 @@ import csv
 import io
 import json
 import logging
+import os
 import re
 import time
 from datetime import datetime, timedelta, timezone
@@ -60,12 +61,46 @@ app = FastAPI(
 BASE_DIR = Path(__file__).resolve().parent
 INDEX_HTML = BASE_DIR / "static" / "index.html"
 POLICIES_JSON = BASE_DIR / "source_policies.json"
-REFRESH_INTERVAL_SECONDS = 300
-MAX_CACHE_ITEMS = 600
-MAX_ITEMS_PER_SOURCE = 80
-CURATION_WINDOW_DAYS = 7
-CURATION_MIN_ITEMS = 5
-CURATION_MIN_RELEVANCE_RATIO = 0.35
+
+
+def _env_int(name: str, default: int, minimum: Optional[int] = None, maximum: Optional[int] = None) -> int:
+    raw = os.getenv(name)
+    if raw is None or raw.strip() == "":
+        value = default
+    else:
+        try:
+            value = int(raw)
+        except ValueError:
+            value = default
+    if minimum is not None:
+        value = max(minimum, value)
+    if maximum is not None:
+        value = min(maximum, value)
+    return value
+
+
+def _env_float(name: str, default: float, minimum: Optional[float] = None, maximum: Optional[float] = None) -> float:
+    raw = os.getenv(name)
+    if raw is None or raw.strip() == "":
+        value = default
+    else:
+        try:
+            value = float(raw)
+        except ValueError:
+            value = default
+    if minimum is not None:
+        value = max(minimum, value)
+    if maximum is not None:
+        value = min(maximum, value)
+    return value
+
+
+REFRESH_INTERVAL_SECONDS = _env_int("REFRESH_INTERVAL_SECONDS", 300, minimum=30)
+MAX_CACHE_ITEMS = _env_int("MAX_CACHE_ITEMS", 600, minimum=50, maximum=2000)
+MAX_ITEMS_PER_SOURCE = _env_int("MAX_ITEMS_PER_SOURCE", 80, minimum=10, maximum=300)
+CURATION_WINDOW_DAYS = _env_int("CURATION_WINDOW_DAYS", 7, minimum=1, maximum=30)
+CURATION_MIN_ITEMS = _env_int("CURATION_MIN_ITEMS", 5, minimum=1, maximum=100)
+CURATION_MIN_RELEVANCE_RATIO = _env_float("CURATION_MIN_RELEVANCE_RATIO", 0.35, minimum=0.0, maximum=1.0)
 
 logger = logging.getLogger("infosec-news-agent")
 if not logger.handlers:
@@ -349,7 +384,7 @@ async def _translate_to_ptbr(
                 response = await local_client.get(url)
         else:
             response = await client.get(url)
-            response.raise_for_status()
+        response.raise_for_status()
         payload = response.json()
         translated = "".join(chunk[0] for chunk in payload[0] if chunk and chunk[0])
         translated = _normalize_whitespace(translated) or normalized

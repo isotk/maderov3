@@ -40,6 +40,22 @@ CATEGORY_RULES = [
     ),
     CategoryRule("Phishing", ["phishing", "smishing", "vishing", "email scam", "credential theft"]),
     CategoryRule("Data Breach", ["data breach", "data leak", "leaked", "exposed data", "compromised"]),
+    CategoryRule(
+        "Dark Web",
+        [
+            "dark web",
+            "darkweb",
+            ".onion",
+            "onion site",
+            "tor network",
+            "leak site",
+            "ransomware leak",
+            "initial access broker",
+            "stolen credentials",
+            "credential dump",
+            "underground forum",
+        ],
+    ),
     CategoryRule("Cloud Security", ["cloud", "aws", "azure", "gcp", "kubernetes", "container"]),
     CategoryRule("Threat Intelligence", ["apt", "ioc", "threat actor", "campaign", "attribution"]),
     CategoryRule(
