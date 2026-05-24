@@ -179,7 +179,7 @@
 
       .compact-quick {
         display: grid;
-        grid-template-columns: repeat(8, minmax(0, 1fr));
+        grid-template-columns: repeat(9, minmax(0, 1fr));
         gap: 3px;
         align-items: center;
         border: 1px solid var(--line);
@@ -1552,6 +1552,7 @@
              <button class="compact-quick-btn" type="button" data-compact="osint" data-label="OSINT" title="OSINT">OSINT</button>
              <button class="compact-quick-btn" type="button" data-compact="defensive" data-label="Defensiva" title="Seguranca Defensiva">Defensiva</button>
              <button class="compact-quick-btn" type="button" data-compact="darkweb" data-label="Dark Web" title="Dark Web">Dark Web</button>
+             <button class="compact-quick-btn" type="button" data-compact="ia" data-label="IA" title="Inteligencia Artificial">IA</button>
             </div>
           <select id="compact-profile">
             <option value="strict">Estrito</option>
@@ -1570,6 +1571,7 @@
           <button id="quick-osint" class="quick-filter-btn" type="button">Somente OSINT</button>
           <button id="quick-defensive" class="quick-filter-btn" type="button">Somente Defensiva</button>
           <button id="quick-darkweb" class="quick-filter-btn" type="button">Somente Dark Web</button>
+          <button id="quick-ia" class="quick-filter-btn" type="button">Somente IA</button>
         </div>
         <div class="threat-map-panel">
           <div class="threat-map-head">
@@ -1750,6 +1752,7 @@
       const quickOsintEl = document.getElementById("quick-osint");
       const quickDefensiveEl = document.getElementById("quick-defensive");
       const quickDarkwebEl = document.getElementById("quick-darkweb");
+      const quickIaEl = document.getElementById("quick-ia");
       const compactQuickEl = document.getElementById("compact-quick");
       const compactProfileEl = document.getElementById("compact-profile");
       const compactReloadEl = document.getElementById("compact-reload");
@@ -2102,6 +2105,7 @@
           OSINT: "osint",
           Defensiva: "defensive",
           "Dark Web": "darkweb",
+          IA: "ia",
         };
         const active = map[quickFilterLabel] || "all";
         for (const btn of compactQuickEl.querySelectorAll(".compact-quick-btn")) {
@@ -2473,6 +2477,7 @@
         quickOsintEl.classList.remove("active");
         quickDefensiveEl.classList.remove("active");
         quickDarkwebEl.classList.remove("active");
+        quickIaEl.classList.remove("active");
         applyTheme("dark");
         syncCompactFromMain();
         loadNews();
@@ -2490,6 +2495,7 @@
         quickOsintEl.classList.remove("active");
         quickDefensiveEl.classList.remove("active");
         quickDarkwebEl.classList.remove("active");
+        quickIaEl.classList.remove("active");
         syncCompactFromMain();
         loadNews();
       });
@@ -2512,6 +2518,7 @@
         quickOsintEl.classList.remove("active");
         quickDefensiveEl.classList.remove("active");
         quickDarkwebEl.classList.remove("active");
+        quickIaEl.classList.remove("active");
         syncCompactFromMain();
         loadNews();
       });
@@ -2528,6 +2535,7 @@
         quickOsintEl.classList.remove("active");
         quickDefensiveEl.classList.remove("active");
         quickDarkwebEl.classList.remove("active");
+        quickIaEl.classList.remove("active");
         syncCompactFromMain();
         loadNews();
       });
@@ -2544,6 +2552,7 @@
         quickOsintEl.classList.remove("active");
         quickDefensiveEl.classList.remove("active");
         quickDarkwebEl.classList.remove("active");
+        quickIaEl.classList.remove("active");
         syncCompactFromMain();
         loadNews();
       });
@@ -2565,6 +2574,7 @@
         quickOsintEl.classList.remove("active");
         quickDefensiveEl.classList.remove("active");
         quickDarkwebEl.classList.remove("active");
+        quickIaEl.classList.remove("active");
         syncCompactFromMain();
         loadNews();
       });
@@ -2581,6 +2591,7 @@
         quickXEl.classList.remove("active");
         quickDefensiveEl.classList.remove("active");
         quickDarkwebEl.classList.remove("active");
+        quickIaEl.classList.remove("active");
         syncCompactFromMain();
         loadNews();
       });
@@ -2597,6 +2608,7 @@
         quickXEl.classList.remove("active");
         quickOsintEl.classList.remove("active");
         quickDarkwebEl.classList.remove("active");
+        quickIaEl.classList.remove("active");
         syncCompactFromMain();
         loadNews();
       });
@@ -2613,6 +2625,50 @@
         quickXEl.classList.remove("active");
         quickOsintEl.classList.remove("active");
         quickDefensiveEl.classList.remove("active");
+        quickIaEl.classList.remove("active");
+        syncCompactFromMain();
+        loadNews();
+      });
+      quickIaEl.addEventListener("click", () => {
+        setQuickProfile("strict");
+        quickSourceFilter = [
+          "openai-news",
+          "deepmind-blog",
+          "anthropic-news",
+          "mit-ai-topic",
+          "venturebeat-ai",
+          "the-decoder",
+          "techcrunch-ai",
+          "arstechnica-ai",
+          "wired-ai",
+          "reuters-ai",
+          "arxiv-cs-ai",
+          "paperswithcode",
+          "huggingface-papers",
+          "semantic-scholar",
+          "aisi-uk",
+          "alignment-forum",
+          "lesswrong-ai",
+          "huggingface-main",
+          "langchain-blog",
+          "ollama-blog",
+          "mistral-news",
+          "futuretools",
+          "theres-an-ai-for-that",
+          "bensbites",
+          "superhuman-ai",
+        ].join(",");
+        quickQueryFilter = "artificial intelligence ai genai llm machine learning ai security prompt injection model poisoning openai gemini copilot";
+        quickFilterLabel = "IA";
+        quickIaEl.classList.add("active");
+        quickAllEl.classList.remove("active");
+        quickMicrosoftEl.classList.remove("active");
+        quickLinuxEl.classList.remove("active");
+        quickAppleEl.classList.remove("active");
+        quickXEl.classList.remove("active");
+        quickOsintEl.classList.remove("active");
+        quickDefensiveEl.classList.remove("active");
+        quickDarkwebEl.classList.remove("active");
         syncCompactFromMain();
         loadNews();
       });
@@ -2673,6 +2729,7 @@
         else if (action === "osint") quickOsintEl.click();
         else if (action === "defensive") quickDefensiveEl.click();
         else if (action === "darkweb") quickDarkwebEl.click();
+        else if (action === "ia") quickIaEl.click();
         else quickAllEl.click();
       });
       compactReloadEl.addEventListener("click", () => {

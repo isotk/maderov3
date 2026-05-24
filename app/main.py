@@ -24,7 +24,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from .categorizer import CATEGORY_RULES, categorize_text
-from .sources import SOURCE_REGISTRY, SourceConfig, source_meta
+from .sources import IA_SOURCE_IDS, SOURCE_REGISTRY, SourceConfig, source_meta
 
 
 class NewsItem(BaseModel):
@@ -855,6 +855,8 @@ async def news(
     if normalized_category:
         normalized_category = normalized_category.lower()
         filtered = [item for item in filtered if item.category.lower() == normalized_category]
+        if normalized_category == "ia":
+            filtered = [item for item in filtered if item.source_id in IA_SOURCE_IDS]
 
     normalized_source = _normalize_optional_text(source)
     if normalized_source:

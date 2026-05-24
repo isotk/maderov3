@@ -57,6 +57,23 @@ CATEGORY_RULES = [
         ],
     ),
     CategoryRule("Cloud Security", ["cloud", "aws", "azure", "gcp", "kubernetes", "container"]),
+    CategoryRule(
+        "IA",
+        [
+            "artificial intelligence",
+            "ai",
+            "genai",
+            "llm",
+            "large language model",
+            "machine learning",
+            "prompt injection",
+            "model poisoning",
+            "ai security",
+            "openai",
+            "gemini",
+            "copilot",
+        ],
+    ),
     CategoryRule("Threat Intelligence", ["apt", "ioc", "threat actor", "campaign", "attribution"]),
     CategoryRule(
         "Seguranca Defensiva",
