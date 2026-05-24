@@ -672,8 +672,77 @@
       .news-grid {
         margin-top: 16px;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 12px;
+      }
+
+      .cybermap-widget {
+        position: fixed;
+        right: 14px;
+        bottom: 14px;
+        z-index: 55;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 16px 30px rgba(0, 0, 0, 0.32);
+        background: rgba(7, 20, 30, 0.9);
+      }
+
+      .cybermap-widget.hidden {
+        display: none;
+      }
+
+      .cybermap-widget-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 6px 8px;
+        border-bottom: 1px solid var(--line);
+        background: linear-gradient(130deg, var(--accent-soft), rgba(16, 37, 49, 0.7));
+        cursor: move;
+        user-select: none;
+      }
+
+      .cybermap-widget-title {
+        font-size: 0.68rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--text);
+      }
+
+      .cybermap-widget-close {
+        border: 1px solid var(--accent-line);
+        border-radius: 999px;
+        background: transparent;
+        color: var(--text);
+        font-size: 0.7rem;
+        font-weight: 800;
+        padding: 3px 8px;
+      }
+
+      .cybermap-widget iframe {
+        display: block;
+      }
+
+      .cybermap-widget-open {
+        position: fixed;
+        right: 14px;
+        bottom: 14px;
+        z-index: 54;
+        display: none;
+        border: 1px solid var(--accent-line);
+        border-radius: 999px;
+        background: rgba(7, 20, 30, 0.92);
+        color: var(--text);
+        padding: 7px 10px;
+        font-size: 0.72rem;
+        font-weight: 700;
+      }
+
+      .cybermap-widget-open.show {
+        display: inline-flex;
       }
 
       .content-layout {
@@ -1276,6 +1345,11 @@
       }
 
       @media (max-width: 1200px) {
+        .news-grid,
+        .loading-grid {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
         .top-row {
           grid-template-columns: 1fr;
         }
@@ -1308,6 +1382,11 @@
       }
 
       @media (max-width: 980px) {
+        .news-grid,
+        .loading-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
         .top-row {
           grid-template-columns: 1fr;
         }
@@ -1353,6 +1432,18 @@
       }
 
       @media (max-width: 620px) {
+        .news-grid,
+        .loading-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .cybermap-widget {
+          right: 8px;
+          bottom: 8px;
+          transform: scale(0.85);
+          transform-origin: bottom right;
+        }
+
         .controls {
           grid-template-columns: 1fr;
         }
@@ -1622,6 +1713,15 @@
       </section>
     </main>
 
+    <div id="cybermap-widget" class="cybermap-widget" aria-label="Kaspersky Cybermap Widget">
+      <div id="cybermap-widget-bar" class="cybermap-widget-bar">
+        <span class="cybermap-widget-title">Kaspersky Cybermap</span>
+        <button id="cybermap-widget-close" class="cybermap-widget-close" type="button" aria-label="Fechar widget">X</button>
+      </div>
+      <iframe width="339" height="366" src="https://cybermap.kaspersky.com/pt/widget/dynamic/dark" frameborder="0" title="Kaspersky Cybermap Widget"></iframe>
+    </div>
+    <button id="cybermap-widget-open" class="cybermap-widget-open" type="button">Abrir Cybermap</button>
+
     <script>
       const statusEl = document.getElementById("status");
       const refreshEl = document.getElementById("refresh");
@@ -1667,6 +1767,10 @@
       const newsMetaEl = document.getElementById("news-meta");
       const sourceSearchEl = document.getElementById("source-search");
       const sourceStatsEl = document.getElementById("source-stats");
+      const cybermapWidgetEl = document.getElementById("cybermap-widget");
+      const cybermapWidgetBarEl = document.getElementById("cybermap-widget-bar");
+      const cybermapWidgetCloseEl = document.getElementById("cybermap-widget-close");
+      const cybermapWidgetOpenEl = document.getElementById("cybermap-widget-open");
 
       let cachedNews = [];
       let nextRefreshAt = Date.now() + 300000;
@@ -1709,6 +1813,25 @@
         document.body.classList.toggle("sidebar-collapsed", Boolean(collapsed));
         sidebarToggleEl.textContent = collapsed ? "Mostrar fontes" : "Ocultar fontes";
         localStorage.setItem("ui_sidebar_collapsed", collapsed ? "1" : "0");
+      }
+
+      function setCybermapWidgetVisible(visible) {
+        cybermapWidgetEl.classList.toggle("hidden", !visible);
+        cybermapWidgetOpenEl.classList.toggle("show", !visible);
+        localStorage.setItem("ui_cybermap_widget_hidden", visible ? "0" : "1");
+      }
+
+      function setCybermapWidgetPosition(x, y) {
+        const maxX = window.innerWidth - cybermapWidgetEl.offsetWidth - 6;
+        const maxY = window.innerHeight - cybermapWidgetEl.offsetHeight - 6;
+        const clampedX = Math.max(6, Math.min(x, maxX));
+        const clampedY = Math.max(6, Math.min(y, maxY));
+        cybermapWidgetEl.style.right = "auto";
+        cybermapWidgetEl.style.bottom = "auto";
+        cybermapWidgetEl.style.left = `${clampedX}px`;
+        cybermapWidgetEl.style.top = `${clampedY}px`;
+        localStorage.setItem("ui_cybermap_widget_left", String(clampedX));
+        localStorage.setItem("ui_cybermap_widget_top", String(clampedY));
       }
 
       function cycleTone() {
@@ -2301,6 +2424,33 @@
         applySidebarCollapsed(!isCollapsed);
       });
       toneToggleEl.addEventListener("click", cycleTone);
+      cybermapWidgetCloseEl.addEventListener("click", () => {
+        setCybermapWidgetVisible(false);
+      });
+      cybermapWidgetOpenEl.addEventListener("click", () => {
+        setCybermapWidgetVisible(true);
+      });
+      cybermapWidgetBarEl.addEventListener("pointerdown", (event) => {
+        const startX = event.clientX;
+        const startY = event.clientY;
+        const rect = cybermapWidgetEl.getBoundingClientRect();
+        const originX = rect.left;
+        const originY = rect.top;
+
+        const onMove = (moveEvent) => {
+          const nextX = originX + (moveEvent.clientX - startX);
+          const nextY = originY + (moveEvent.clientY - startY);
+          setCybermapWidgetPosition(nextX, nextY);
+        };
+
+        const onUp = () => {
+          window.removeEventListener("pointermove", onMove);
+          window.removeEventListener("pointerup", onUp);
+        };
+
+        window.addEventListener("pointermove", onMove);
+        window.addEventListener("pointerup", onUp);
+      });
       clearEl.addEventListener("click", () => {
         categoryEl.value = "";
         sourceEl.value = "";
@@ -2544,6 +2694,12 @@
       clusterToggleEl.checked = localStorage.getItem("ui_cluster_mode") === "1";
       applyHeroCollapsed(localStorage.getItem("ui_hero_collapsed") === "1");
       applySidebarCollapsed(localStorage.getItem("ui_sidebar_collapsed") === "1");
+      setCybermapWidgetVisible(localStorage.getItem("ui_cybermap_widget_hidden") !== "1");
+      const savedLeft = Number(localStorage.getItem("ui_cybermap_widget_left"));
+      const savedTop = Number(localStorage.getItem("ui_cybermap_widget_top"));
+      if (Number.isFinite(savedLeft) && Number.isFinite(savedTop)) {
+        setCybermapWidgetPosition(savedLeft, savedTop);
+      }
       syncCompactFromMain();
       loadCategories();
       loadSources();
