@@ -1,0 +1,277 @@
+LISTA COMPLETA DE FONTES SOBRE SEGURANÇA DA INFORMAÇÃO
+Gerado para: ISOTK OWNZ
+
+============================================================
+1. NOTÍCIAS GERAIS DE CIBERSEGURANÇA
+============================================================
+BleepingComputer - https://www.bleepingcomputer.com
+The Hacker News - https://thehackernews.com
+KrebsOnSecurity - https://krebsonsecurity.com
+Dark Reading - https://www.darkreading.com
+SecurityWeek - https://www.securityweek.com
+Help Net Security - https://www.helpnetsecurity.com
+Cybersecurity News - https://cybersecuritynews.com
+Infosecurity Magazine - https://www.infosecurity-magazine.com
+SC Media - https://www.scworld.com
+The Record by Recorded Future - https://therecord.media
+CyberScoop - https://cyberscoop.com
+Cybersecurity Dive - https://www.cybersecuritydive.com
+GBHackers - https://gbhackers.com
+Hackread - https://www.hackread.com
+Security Affairs - https://securityaffairs.com
+Cybernews - https://cybernews.com
+CSO Online - https://www.csoonline.com
+Naked Security / Sophos News - https://news.sophos.com
+
+============================================================
+2. FONTES OFICIAIS DE ALERTAS E VULNERABILIDADES
+============================================================
+CISA Cybersecurity Advisories - https://www.cisa.gov/news-events/cybersecurity-advisories
+CISA Known Exploited Vulnerabilities Catalog - https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+NVD / NIST - https://nvd.nist.gov
+CVE.org - https://www.cve.org
+MITRE ATT&CK - https://attack.mitre.org
+MITRE CVE - https://cve.mitre.org
+FIRST.org - https://www.first.org
+ENISA - https://www.enisa.europa.eu
+Europol Cybercrime Centre - https://www.europol.europa.eu/about-europol/european-cybercrime-centre-ec3
+CERT/CC - https://www.kb.cert.org/vuls
+US-CERT / CISA - https://www.cisa.gov
+
+============================================================
+3. BRASIL E FONTES EM PORTUGUÊS
+============================================================
+CERT.br - https://www.cert.br
+Cartilha CERT.br - https://cartilha.cert.br
+NIC.br - https://www.nic.br
+CGI.br - https://www.cgi.br
+CISO Advisor - https://www.cisoadvisor.com.br
+Canaltech Segurança - https://canaltech.com.br/seguranca
+Convergência Digital - https://www.convergenciadigital.com.br
+Security Report - https://www.securityreport.com.br
+IT Forum Segurança - https://itforum.com.br
+Olhar Digital Segurança - https://olhardigital.com.br/editorias/seguranca
+TecMundo Segurança - https://www.tecmundo.com.br/seguranca
+Crypto ID - https://cryptoid.com.br
+
+============================================================
+4. THREAT INTELLIGENCE E PESQUISA DE AMEAÇAS
+============================================================
+Google Cloud / Mandiant Threat Intelligence - https://cloud.google.com/blog/topics/threat-intelligence
+Palo Alto Unit 42 - https://unit42.paloaltonetworks.com
+Cisco Talos - https://blog.talosintelligence.com
+Microsoft Threat Intelligence - https://www.microsoft.com/en-us/security/blog/topic/threat-intelligence
+CrowdStrike Blog - https://www.crowdstrike.com/blog
+SentinelOne Labs - https://www.sentinelone.com/labs
+Check Point Research - https://research.checkpoint.com
+Fortinet FortiGuard Labs - https://www.fortinet.com/blog/threat-research
+Trellix Advanced Research Center - https://www.trellix.com/blogs/research
+Proofpoint Threat Insight - https://www.proofpoint.com/us/blog/threat-insight
+ESET WeLiveSecurity - https://www.welivesecurity.com
+Kaspersky Securelist - https://securelist.com
+Bitdefender Labs - https://www.bitdefender.com/blog/labs
+Sophos News - https://news.sophos.com
+WithSecure Labs - https://labs.withsecure.com
+Red Canary Blog - https://redcanary.com/blog
+Elastic Security Labs - https://www.elastic.co/security-labs
+Huntress Blog - https://www.huntress.com/blog
+Rapid7 Blog - https://www.rapid7.com/blog
+
+============================================================
+5. RANSOMWARE, VAZAMENTOS E INCIDENTES
+============================================================
+BleepingComputer Ransomware - https://www.bleepingcomputer.com/tag/ransomware
+The Record - https://therecord.media
+Ransomware.live - https://www.ransomware.live
+Malwarebytes Labs - https://www.malwarebytes.com/blog
+Sophos Ransomware Reports - https://news.sophos.com/en-us/category/threat-research
+Coveware Blog - https://www.coveware.com/blog
+Chainalysis Blog - https://www.chainalysis.com/blog
+ReliaQuest Blog - https://www.reliaquest.com/blog
+Flashpoint Blog - https://flashpoint.io/blog
+Intel 471 Blog - https://intel471.com/blog
+
+============================================================
+6. VULNERABILIDADES, EXPLOITS E EXPOSIÇÃO
+============================================================
+NVD - https://nvd.nist.gov
+CVE.org - https://www.cve.org
+Exploit Database - https://www.exploit-db.com
+Packet Storm Security - https://packetstormsecurity.com
+Rapid7 Vulnerability Database - https://www.rapid7.com/db
+Vulners - https://vulners.com
+OpenCVE - https://www.opencve.io
+CVE Details - https://www.cvedetails.com
+Shodan Blog - https://www.shodan.io/blog
+GreyNoise Blog - https://www.greynoise.io/blog
+Shadowserver Foundation - https://www.shadowserver.org
+SANS Internet Storm Center - https://isc.sans.edu
+
+============================================================
+7. SEGURANÇA MICROSOFT, WINDOWS, AD, AZURE E M365
+============================================================
+Microsoft Security Response Center — MSRC - https://msrc.microsoft.com
+Microsoft Security Blog - https://www.microsoft.com/en-us/security/blog
+Microsoft Security Update Guide - https://msrc.microsoft.com/update-guide
+Microsoft Defender Blog - https://techcommunity.microsoft.com/category/microsoft-security/blog/microsoftdefenderatpblog
+Microsoft Entra Blog - https://techcommunity.microsoft.com/category/microsoft-entra/blog
+Microsoft Azure Security Blog - https://azure.microsoft.com/en-us/blog/topics/security
+Microsoft Tech Community Security - https://techcommunity.microsoft.com/category/security-compliance-and-identity/blog
+Windows Release Health - https://learn.microsoft.com/windows/release-health
+Microsoft Learn Security - https://learn.microsoft.com/security
+
+============================================================
+8. FABRICANTES IMPORTANTES
+============================================================
+Fortinet PSIRT - https://www.fortiguard.com/psirt
+Fortinet Threat Research - https://www.fortinet.com/blog/threat-research
+Palo Alto Security Advisories - https://security.paloaltonetworks.com
+Cisco Security Advisories - https://sec.cloudapps.cisco.com/security/center/publicationListing.x
+Cisco Talos - https://blog.talosintelligence.com
+VMware / Broadcom Security Advisories - https://support.broadcom.com/web/ecx/security-advisory
+Veeam Security Advisories - https://www.veeam.com/kb_security.html
+Dell Security Advisories - https://www.dell.com/support/security
+HPE Security Bulletins - https://support.hpe.com/connect/s/securitybulletinlibrary
+Aruba Networking Advisories - https://www.arubanetworks.com/support-services/security-bulletins
+Ubiquiti Community Releases - https://community.ui.com/releases
+Sophos Security Advisories - https://www.sophos.com/en-us/security-advisories
+Ivanti Security Advisories - https://forums.ivanti.com/s/security-advisory
+Citrix Security Bulletins - https://support.citrix.com/securitybulletins
+F5 Security Advisories - https://my.f5.com/manage/s/solutions
+Juniper Security Advisories - https://supportportal.juniper.net/s/global-search/%40uri
+SonicWall PSIRT - https://psirt.global.sonicwall.com/vuln-list
+
+============================================================
+9. LINUX, OPEN SOURCE E DISTRIBUIÇÕES
+============================================================
+Debian Security Advisories - https://www.debian.org/security
+Ubuntu Security Notices - https://ubuntu.com/security/notices
+Red Hat Security - https://access.redhat.com/security/security-updates
+Oracle Linux Security - https://linux.oracle.com/security
+SUSE Security - https://www.suse.com/security
+Alpine Linux Security - https://security.alpinelinux.org
+Arch Linux Security - https://security.archlinux.org
+Kernel.org - https://www.kernel.org
+Linux CVEs - https://linuxsecurity.com
+OpenSSL Vulnerabilities - https://www.openssl.org/news/vulnerabilities.html
+Apache Security - https://httpd.apache.org/security/vulnerabilities_24.html
+NGINX Security Advisories - https://nginx.org/en/security_advisories.html
+PHP Security - https://www.php.net/security
+OpenSSH Release Notes - https://www.openssh.com/releasenotes.html
+
+============================================================
+10. CLOUD SECURITY — AWS, AZURE, GOOGLE E ORACLE
+============================================================
+AWS Security Blog - https://aws.amazon.com/blogs/security
+AWS Security Bulletins - https://aws.amazon.com/security/security-bulletins
+Azure Security Blog - https://azure.microsoft.com/en-us/blog/topics/security
+Microsoft Security Blog - https://www.microsoft.com/en-us/security/blog
+Google Cloud Security Blog - https://cloud.google.com/blog/products/identity-security
+Google Cloud Threat Intelligence - https://cloud.google.com/blog/topics/threat-intelligence
+Oracle Security Alerts - https://www.oracle.com/security-alerts
+Oracle Critical Patch Updates - https://www.oracle.com/security-alerts/#CriticalPatchUpdates
+Cloud Security Alliance - https://cloudsecurityalliance.org
+Wiz Blog - https://www.wiz.io/blog
+Orca Security Blog - https://orca.security/resources/blog
+
+============================================================
+11. APPSEC, SEGURANÇA WEB E PENTEST
+============================================================
+PortSwigger Blog - https://portswigger.net/blog
+PortSwigger Web Security Academy - https://portswigger.net/web-security
+OWASP - https://owasp.org
+OWASP Top 10 - https://owasp.org/www-project-top-ten
+Project Zero - https://googleprojectzero.blogspot.com
+HackerOne Hacktivity - https://hackerone.com/hacktivity
+Bugcrowd Blog - https://www.bugcrowd.com/blog
+Intigriti Blog - https://www.intigriti.com/blog
+YesWeHack Blog - https://blog.yeswehack.com
+Bishop Fox Blog - https://bishopfox.com/blog
+NetSPI Blog - https://www.netspi.com/blog
+Rhino Security Labs - https://rhinosecuritylabs.com/blog
+
+============================================================
+12. SOC, BLUE TEAM, DFIR E DETECÇÃO
+============================================================
+SANS Internet Storm Center - https://isc.sans.edu
+SANS DFIR - https://www.sans.org/blog/?focus-area=digital-forensics-incident-response
+The DFIR Report - https://thedfirreport.com
+Sigma HQ - https://github.com/SigmaHQ/sigma
+YARA Rules - https://github.com/Yara-Rules/rules
+Detection Engineering - https://detectionengineering.io
+Splunk Security Blog - https://www.splunk.com/en_us/blog/security.html
+Elastic Security Labs - https://www.elastic.co/security-labs
+Microsoft Defender XDR Blog - https://techcommunity.microsoft.com/category/microsoft-security/blog/microsoftdefenderatpblog
+Red Canary Blog - https://redcanary.com/blog
+
+============================================================
+13. MALWARE ANALYSIS E ENGENHARIA REVERSA
+============================================================
+Malwarebytes Labs - https://www.malwarebytes.com/blog
+Any.Run Blog - https://any.run/cybersecurity-blog
+Joe Sandbox Blog - https://www.joesandbox.com/blog
+Intezer Blog - https://intezer.com/blog
+VirusTotal Blog - https://blog.virustotal.com
+ReversingLabs Blog - https://www.reversinglabs.com/blog
+Ghidra - https://github.com/NationalSecurityAgency/ghidra
+Malware Traffic Analysis - https://www.malware-traffic-analysis.net
+VX-Underground - https://vx-underground.org
+
+============================================================
+14. PRIVACIDADE, GOVERNANÇA E GESTÃO DE RISCO
+============================================================
+IAPP - https://iapp.org/news
+ISACA - https://www.isaca.org/resources/news-and-trends
+NIST Cybersecurity Framework - https://www.nist.gov/cyberframework
+CIS Controls - https://www.cisecurity.org/controls
+CIS Benchmarks - https://www.cisecurity.org/cis-benchmarks
+ISO 27001 - https://www.iso.org/isoiec-27001-information-security.html
+ANPD Brasil - https://www.gov.br/anpd
+LGPD Brasil - https://www.gov.br/anpd/pt-br
+
+============================================================
+15. FEEDS RSS ÚTEIS
+============================================================
+BleepingComputer RSS - https://www.bleepingcomputer.com/feed
+The Hacker News RSS - https://feeds.feedburner.com/TheHackersNews
+KrebsOnSecurity RSS - https://krebsonsecurity.com/feed
+Dark Reading RSS - https://www.darkreading.com/rss.xml
+SecurityWeek RSS - https://www.securityweek.com/feed
+SANS ISC RSS - https://isc.sans.edu/rssfeed.xml
+Microsoft Security Blog RSS - https://www.microsoft.com/en-us/security/blog/feed
+CISA Advisories RSS - https://www.cisa.gov/cybersecurity-advisories/all.xml
+CERT.br RSS - https://www.cert.br/feed.xml
+PortSwigger Blog RSS - https://portswigger.net/blog/rss
+Rapid7 Blog RSS - https://www.rapid7.com/blog/rss
+Sophos News RSS - https://news.sophos.com/en-us/feed
+
+============================================================
+LISTA ESSENCIAL PARA COMEÇAR
+============================================================
+https://www.bleepingcomputer.com
+https://thehackernews.com
+https://krebsonsecurity.com
+https://www.cisa.gov/news-events/cybersecurity-advisories
+https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+https://nvd.nist.gov
+https://www.cve.org
+https://attack.mitre.org
+https://www.cert.br
+https://cartilha.cert.br
+https://msrc.microsoft.com
+https://msrc.microsoft.com/update-guide
+https://www.microsoft.com/en-us/security/blog
+https://cloud.google.com/blog/topics/threat-intelligence
+https://unit42.paloaltonetworks.com
+https://blog.talosintelligence.com
+https://www.fortinet.com/blog/threat-research
+https://www.fortiguard.com/psirt
+https://www.veeam.com/kb_security.html
+https://support.broadcom.com/web/ecx/security-advisory
+https://isc.sans.edu
+https://thedfirreport.com
+https://portswigger.net/blog
+https://owasp.org
+https://www.exploit-db.com
+https://packetstormsecurity.com
+https://www.ransomware.live

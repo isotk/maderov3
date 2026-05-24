@@ -1,0 +1,9 @@
+services:
+  infosec-news-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: infosec-news-agent
+    ports:
+      - "8000:8000"
+    restart: unless-stopped

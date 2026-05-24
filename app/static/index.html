@@ -1,0 +1,2393 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MADERO INFONEWS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #040c11;
+        --bg-soft: #0d1a22;
+        --card: #102531;
+        --card-hover: #173545;
+        --text: #eaf6fb;
+        --muted: #9fc2d1;
+        --line: #2b4d5e;
+        --accent: #40b6ff;
+        --accent-2: #61d8ff;
+        --accent-soft: rgba(64, 182, 255, 0.16);
+        --accent-line: rgba(64, 182, 255, 0.34);
+        --warn: #f7b267;
+        --danger: #ff8f8f;
+      }
+
+      body[data-tone="dark"] {
+        --accent: #40b6ff;
+        --accent-2: #61d8ff;
+        --accent-soft: rgba(64, 182, 255, 0.16);
+        --accent-line: rgba(64, 182, 255, 0.34);
+      }
+
+      body[data-tone="bw"] {
+        --accent: #eaf2ff;
+        --accent-2: #f9fbff;
+        --accent-soft: rgba(234, 242, 255, 0.2);
+        --accent-line: rgba(234, 242, 255, 0.4);
+      }
+
+      body[data-tone="matrix"] {
+        --bg: #020a04;
+        --bg-soft: #0a1a0d;
+        --card: #0f2013;
+        --card-hover: #17301e;
+        --text: #d9ffe8;
+        --muted: #89c9a3;
+        --line: #23533a;
+        --accent: #35ff8b;
+        --accent-2: #80ffb3;
+        --accent-soft: rgba(53, 255, 139, 0.18);
+        --accent-line: rgba(53, 255, 139, 0.4);
+      }
+
+      body[data-mode="light"] {
+        --bg: #f2f8fd;
+        --bg-soft: #ffffff;
+        --card: #ffffff;
+        --card-hover: #f4f8fc;
+        --text: #133347;
+        --muted: #5d7d92;
+        --line: #c8dde9;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--text);
+        font-family: "Manrope", "Segoe UI", sans-serif;
+        background:
+          radial-gradient(60% 80% at 5% -10%, var(--accent-soft), transparent 60%),
+          radial-gradient(55% 70% at 100% 0%, rgba(64, 182, 255, 0.24), transparent 72%),
+          radial-gradient(45% 60% at 50% 100%, rgba(43, 77, 94, 0.35), transparent 70%),
+          linear-gradient(180deg, #03080d 0%, var(--bg) 100%);
+        min-height: 100vh;
+        transition: background 0.35s ease, color 0.25s ease;
+        position: relative;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: url("/static/madero_fundo.png") center center / min(78vw, 980px) no-repeat;
+        opacity: 0.08;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      body[data-tone="matrix"] {
+        background:
+          radial-gradient(60% 80% at 5% -10%, rgba(53, 255, 139, 0.18), transparent 60%),
+          radial-gradient(55% 70% at 100% 0%, rgba(53, 255, 139, 0.12), transparent 72%),
+          linear-gradient(180deg, #010703 0%, #020a04 100%);
+      }
+
+      body[data-tone="matrix"]::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: repeating-linear-gradient(180deg, rgba(90, 255, 160, 0.04) 0px, rgba(90, 255, 160, 0.04) 1px, transparent 2px, transparent 4px);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      body[data-mode="light"] {
+        background:
+          radial-gradient(60% 80% at 5% -10%, var(--accent-soft), transparent 60%),
+          radial-gradient(55% 70% at 100% 0%, rgba(64, 142, 196, 0.2), transparent 72%),
+          linear-gradient(180deg, #fbfdff 0%, var(--bg) 100%);
+      }
+
+      .wrap {
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 22px 16px 40px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero {
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 20px;
+        background: linear-gradient(130deg, var(--accent-soft), rgba(16, 37, 49, 0.78));
+        box-shadow: 0 20px 55px rgba(0, 0, 0, 0.25);
+        backdrop-filter: blur(8px);
+        transition: background 0.35s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        position: sticky;
+        top: 10px;
+        z-index: 30;
+      }
+
+      .hero-collapsed .hero {
+        padding: 10px 14px;
+      }
+
+      .hero-collapsed .quick-filter-row,
+      .hero-collapsed .top-row {
+        display: none;
+      }
+
+      .hero-compact-row {
+        display: none;
+      }
+
+      .hero-collapsed .hero-compact-row {
+        margin-top: 10px;
+        display: grid;
+        grid-template-columns: minmax(0, 1.55fr) minmax(140px, 0.85fr) auto auto;
+        gap: 6px;
+        align-items: center;
+        padding: 6px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background:
+          linear-gradient(rgba(5, 17, 26, 0.78), rgba(5, 17, 26, 0.78)),
+          url("/static/madero_vazado.png") center center / cover no-repeat;
+      }
+
+      .hero-compact-row select,
+      .hero-compact-row input,
+      .hero-compact-row button {
+        min-height: 30px;
+        border-radius: 8px;
+        font-size: 0.72rem;
+        padding: 4px 7px;
+      }
+
+      .hero-compact-row .compact-btn {
+        white-space: nowrap;
+      }
+
+      .compact-quick {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 3px;
+        align-items: center;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 2px 3px;
+        background: rgba(9, 24, 34, 0.62);
+        width: 100%;
+      }
+
+      .compact-quick-btn {
+        border: 1px solid transparent;
+        background: transparent;
+        color: var(--text);
+        border-radius: 5px;
+        width: 100%;
+        height: 28px;
+        min-height: 28px;
+        padding: 0 8px;
+        font-size: 1.2rem;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      .compact-quick-btn.active {
+        border-color: var(--accent-line);
+        background: var(--accent-soft);
+      }
+
+      .compact-quick-btn::after {
+        content: attr(data-label);
+        position: absolute;
+        left: 50%;
+        bottom: calc(100% + 7px);
+        transform: translateX(-50%);
+        white-space: nowrap;
+        font-size: 0.66rem;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        color: var(--text);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 4px 7px;
+        background: rgba(6, 18, 26, 0.92);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.16s ease;
+      }
+
+      .compact-quick-btn:hover::after,
+      .compact-quick-btn:focus-visible::after {
+        opacity: 1;
+      }
+
+      .sidebar-collapsed .content-layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .sidebar-collapsed .source-list {
+        display: none;
+      }
+
+      body[data-mode="light"] .hero {
+        box-shadow: 0 12px 28px rgba(17, 57, 84, 0.1);
+      }
+
+      .brand-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+      }
+
+      .brand-main {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .top-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      .density-select {
+        min-height: 38px;
+        border-radius: 999px;
+        border: 1px solid var(--accent-line);
+        background: transparent;
+        color: var(--text);
+        padding: 6px 12px;
+        font-size: 0.74rem;
+        font-weight: 700;
+      }
+
+      .quick-filter-row {
+        margin-top: 12px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding: 8px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background:
+          linear-gradient(rgba(7, 20, 30, 0.68), rgba(7, 20, 30, 0.68)),
+          url("/static/madero_vazado.png") center center / cover no-repeat;
+      }
+
+      .quick-filter-btn {
+        border: 1px solid var(--accent-line);
+        background: rgba(10, 28, 40, 0.45);
+        color: var(--text);
+        border-radius: 999px;
+        padding: 8px 13px;
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+      }
+
+      .quick-filter-btn.active {
+        background: var(--accent-soft);
+        box-shadow: inset 0 0 0 1px rgba(126, 202, 235, 0.25);
+      }
+
+      .icon-btn {
+        width: 58px;
+        height: 58px;
+        border-radius: 999px;
+        border: 1px solid var(--accent-line);
+        background: var(--accent-soft);
+        color: var(--text);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.65rem;
+        transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+      }
+
+      .icon-btn.spin {
+        transform: rotate(180deg) scale(1.06);
+      }
+
+      .tone-label {
+        font-size: 0.72rem;
+        border-radius: 999px;
+        border: 1px solid var(--accent-line);
+        padding: 4px 8px;
+        background: var(--accent-soft);
+      }
+
+      .gov-toggle-btn {
+        border: 1px solid var(--accent-line);
+        background: transparent;
+        color: var(--text);
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-size: 0.76rem;
+        font-weight: 700;
+      }
+
+      .hero-toggle-btn {
+        border: 1px solid var(--accent-line);
+        background: transparent;
+        color: var(--text);
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-size: 0.76rem;
+        font-weight: 700;
+      }
+
+      .sidebar-toggle-btn {
+        border: 1px solid var(--accent-line);
+        background: transparent;
+        color: var(--text);
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-size: 0.76rem;
+        font-weight: 700;
+      }
+
+      .brand-logo {
+        width: 164px;
+        height: 164px;
+        border-radius: 16px;
+        border: 1px solid #4c879f;
+        object-fit: contain;
+        object-position: center;
+        background: rgba(0, 0, 0, 0.42);
+        box-shadow: 0 12px 34px rgba(0, 0, 0, 0.42), 0 0 0 2px rgba(110, 196, 232, 0.2);
+      }
+
+      .pill {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        border: 1px solid var(--accent-line);
+        background: var(--accent-soft);
+        color: var(--text);
+      }
+
+      h1 {
+        margin: 12px 0 8px;
+        font-family: "Space Grotesk", "Manrope", sans-serif;
+        font-size: clamp(1.7rem, 2.6vw, 2.4rem);
+        letter-spacing: -0.03em;
+        font-weight: 700;
+      }
+
+      .subtitle {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.95rem;
+        line-height: 1.45;
+      }
+
+      .top-row {
+        margin-top: 16px;
+        display: grid;
+        grid-template-columns: 1.45fr 0.85fr;
+        gap: 12px;
+      }
+
+      .controls,
+      .stats {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 16px;
+        background: rgba(9, 27, 35, 0.78);
+      }
+
+      body[data-mode="light"] .controls,
+      body[data-mode="light"] .stats,
+      body[data-mode="light"] .source-list {
+        background: rgba(255, 255, 255, 0.9);
+      }
+
+      .controls {
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .controls > * {
+        min-width: 0;
+      }
+
+      .controls label {
+        grid-column: span 3;
+      }
+
+      .controls .field-small {
+        grid-column: span 2;
+      }
+
+      .controls .field-medium {
+        grid-column: span 3;
+      }
+
+      .controls .field-wide {
+        grid-column: span 5;
+      }
+
+      .controls .wide {
+        grid-column: 1 / -1;
+      }
+
+      .panel-title {
+        margin: 0 0 8px;
+        font-size: 0.92rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .controls .panel-title,
+      .stats .panel-title {
+        grid-column: 1 / -1;
+      }
+
+      label {
+        display: grid;
+        gap: 6px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--muted);
+      }
+
+      input,
+      select,
+      button {
+        border-radius: 10px;
+        border: 1px solid #365869;
+        background: var(--bg-soft);
+        color: var(--text);
+        padding: 10px 12px;
+        font-family: inherit;
+      }
+
+      input,
+      select {
+        width: 100%;
+        min-width: 0;
+      }
+
+      input:focus,
+      select:focus {
+        outline: 2px solid var(--accent-line);
+        border-color: var(--accent);
+      }
+
+      button {
+        cursor: pointer;
+        border: 0;
+        font-weight: 700;
+        background: linear-gradient(95deg, var(--accent), var(--accent-2));
+        color: #062029;
+        transition: transform 0.18s ease, filter 0.18s ease;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.04);
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .metric {
+        border: 1px solid #2f5564;
+        border-radius: 10px;
+        padding: 10px;
+        background: rgba(11, 29, 36, 0.7);
+      }
+
+      .metric strong {
+        display: block;
+        font-size: 1.28rem;
+        font-family: "Space Grotesk", sans-serif;
+      }
+
+      .metric span {
+        color: var(--muted);
+        font-size: 0.78rem;
+      }
+
+      .status {
+        margin: 14px 0 0;
+        color: var(--muted);
+      }
+
+      .news-head {
+        margin-top: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .news-head h2 {
+        margin: 0;
+        font-size: 1.05rem;
+      }
+
+      .news-head span {
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+
+      .status-row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+
+      .active-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .filter-chip {
+        font-size: 0.72rem;
+        border-radius: 999px;
+        border: 1px solid var(--accent-line);
+        padding: 4px 9px;
+        color: var(--text);
+        background: var(--accent-soft);
+      }
+
+      .news-grid {
+        margin-top: 16px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 12px;
+      }
+
+      .content-layout {
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: 320px minmax(0, 1fr);
+        gap: 12px;
+        align-items: start;
+      }
+
+      .news-column {
+        min-width: 0;
+      }
+
+
+      .source-list {
+        margin-top: 0;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 12px;
+        background: rgba(9, 27, 35, 0.62);
+        position: sticky;
+        top: 12px;
+        max-height: calc(100vh - 28px);
+        overflow: auto;
+      }
+
+      .source-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
+      .source-list h2 {
+        margin: 0;
+        font-size: 0.98rem;
+      }
+
+      .source-hint {
+        font-size: 0.75rem;
+        color: var(--muted);
+      }
+
+      .source-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .governance-panel {
+        margin-top: 12px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 12px;
+        background: rgba(9, 27, 35, 0.78);
+      }
+
+      .governance-panel[hidden] {
+        display: none;
+      }
+
+      .gov-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+
+      .gov-table-wrap {
+        max-height: 360px;
+        overflow: auto;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+      }
+
+      .gov-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.78rem;
+      }
+
+      .gov-table th,
+      .gov-table td {
+        padding: 8px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        vertical-align: top;
+      }
+
+      .gov-table select,
+      .gov-table input {
+        width: 100%;
+        padding: 6px;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        background: rgba(0, 0, 0, 0.24);
+        color: var(--text);
+      }
+
+      .source-item {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 6px 8px;
+        border: 1px solid #2d4f61;
+        border-radius: 10px;
+        padding: 8px 10px;
+        font-size: 0.82rem;
+        cursor: pointer;
+        transition: border-color 0.18s ease, transform 0.18s ease;
+      }
+
+      .controls,
+      .stats,
+      .source-list,
+      .source-item,
+      .metric,
+      .news-card,
+      .tag,
+      .filter-chip,
+      .source-links a,
+      .source-links button,
+      .source-item strong,
+      .ghost-btn,
+      input,
+      select {
+        transition: background 0.3s ease, border-color 0.25s ease, color 0.25s ease;
+      }
+
+      body[data-mode="light"] .source-item,
+      body[data-mode="light"] .metric {
+        background: #fff;
+      }
+
+      .source-item:hover {
+        border-color: #4f7e92;
+        transform: translateY(-1px);
+      }
+
+      .source-item strong {
+        font-size: 0.75rem;
+        border: 1px solid var(--accent-line);
+        border-radius: 999px;
+        padding: 2px 8px;
+        color: var(--text);
+        background: var(--accent-soft);
+      }
+
+      .source-main {
+        min-width: 0;
+      }
+
+      .source-main b {
+        display: block;
+        font-size: 0.84rem;
+        line-height: 1.35;
+      }
+
+      .source-sub {
+        font-size: 0.72rem;
+        color: #a3c9d9;
+        margin-top: 2px;
+      }
+
+      .source-links {
+        grid-column: 1 / -1;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .source-links a,
+      .source-links button {
+        font-size: 0.72rem;
+        border: 1px solid var(--accent-line);
+        border-radius: 999px;
+        padding: 3px 8px;
+        color: var(--text);
+        background: var(--accent-soft);
+        text-decoration: none;
+      }
+
+      .source-links button {
+        cursor: pointer;
+      }
+
+      .source-disabled {
+        color: #f7b267;
+      }
+
+      .news-card {
+        border: 1px solid var(--line);
+        border-left: 4px solid #3c7388;
+        border-radius: 14px;
+        padding: 14px;
+        background: linear-gradient(180deg, var(--card) 0%, #0e232d 100%);
+        transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+        animation: fadeUp 0.35s ease both;
+        position: relative;
+      }
+
+      .news-grid.compact .news-card {
+        padding: 10px;
+      }
+
+      .news-grid.compact .news-thumb,
+      .news-grid.compact .news-thumb-placeholder {
+        aspect-ratio: 18 / 7;
+        margin-bottom: 8px;
+      }
+
+      .news-grid.compact .news-card p {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-size: 0.84rem;
+      }
+
+      body[data-mode="light"] .news-card {
+        box-shadow: 0 8px 20px rgba(15, 62, 92, 0.08);
+      }
+
+      .news-card:hover {
+        transform: translateY(-3px);
+        border-color: #3c7388;
+        background: linear-gradient(180deg, var(--card-hover) 0%, #0f2a35 100%);
+      }
+
+      .card-hoverbar {
+        position: absolute;
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        display: none;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 6px 8px;
+        background: rgba(6, 17, 25, 0.82);
+        backdrop-filter: blur(4px);
+      }
+
+      .news-card:hover .card-hoverbar {
+        display: flex;
+      }
+
+      .card-hover-meta {
+        font-size: 0.7rem;
+        color: #b7d9e8;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      .card-hover-actions {
+        display: inline-flex;
+        gap: 6px;
+      }
+
+      .card-hover-actions a,
+      .card-hover-actions button {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: transparent;
+        color: var(--text);
+        font-size: 0.68rem;
+        padding: 4px 7px;
+      }
+
+      .cluster-card {
+        border: 1px dashed var(--line);
+        border-radius: 12px;
+        padding: 10px;
+        background: rgba(11, 25, 36, 0.42);
+      }
+
+      .cluster-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .cluster-head b {
+        font-size: 0.82rem;
+      }
+
+      .cluster-toggle {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: transparent;
+        color: var(--text);
+        font-size: 0.68rem;
+        padding: 4px 8px;
+      }
+
+      .cluster-items {
+        margin-top: 10px;
+        display: none;
+      }
+
+      .cluster-items.open {
+        display: grid;
+        gap: 10px;
+      }
+
+      @media (max-width: 860px) {
+        .card-hoverbar {
+          display: none !important;
+        }
+      }
+
+      .tag {
+        display: inline-block;
+        font-size: 0.72rem;
+        border-radius: 999px;
+        padding: 4px 10px;
+        margin-bottom: 8px;
+        color: var(--text);
+        background: var(--accent-soft);
+        border: 1px solid var(--accent-line);
+      }
+
+      .card-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
+      .priority-chip {
+        font-size: 0.68rem;
+        border-radius: 999px;
+        padding: 3px 8px;
+        border: 1px solid transparent;
+        white-space: nowrap;
+      }
+
+      .priority-high {
+        color: #ffd8d8;
+        background: rgba(190, 40, 40, 0.28);
+        border-color: rgba(226, 94, 94, 0.62);
+      }
+
+      .priority-medium {
+        color: #ffe9c1;
+        background: rgba(176, 117, 26, 0.25);
+        border-color: rgba(220, 157, 57, 0.6);
+      }
+
+      .priority-low {
+        color: #d4f4ff;
+        background: rgba(38, 118, 163, 0.22);
+        border-color: rgba(75, 154, 199, 0.58);
+      }
+
+      .news-card h3 {
+        margin: 0 0 8px;
+        font-size: 1.03rem;
+        letter-spacing: -0.01em;
+        line-height: 1.35;
+      }
+
+      .news-thumb {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        margin: 2px 0 10px;
+        background: rgba(0, 0, 0, 0.25);
+      }
+
+      .news-thumb-placeholder {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        margin: 2px 0 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 12px;
+        color: #d8ebf4;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .news-thumb-placeholder::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(160deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.42)),
+          var(--ph-bg, linear-gradient(135deg, #22384b, #1a2635));
+        pointer-events: none;
+      }
+
+      .news-thumb-placeholder::after {
+        content: "";
+        position: absolute;
+        width: 170px;
+        height: 170px;
+        right: -42px;
+        top: -62px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .news-ph-category {
+        position: relative;
+        z-index: 1;
+        font-size: 0.68rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        opacity: 0.92;
+        margin-bottom: 6px;
+      }
+
+      .news-ph-title {
+        position: relative;
+        z-index: 1;
+        font-size: 0.84rem;
+        line-height: 1.35;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+      }
+
+      a {
+        color: var(--accent-2);
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      .news-card p {
+        margin: 0 0 10px;
+        color: var(--muted);
+        font-size: 0.88rem;
+        line-height: 1.5;
+      }
+
+      .meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        font-size: 0.74rem;
+        letter-spacing: 0.01em;
+        color: #9dd0e3;
+      }
+
+      .cve-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 10px;
+      }
+
+      .cve-chip {
+        font-size: 0.7rem;
+        border: 1px solid #5f4f1f;
+        border-radius: 999px;
+        padding: 3px 8px;
+        background: rgba(247, 178, 103, 0.18);
+        color: #ffd9a1;
+      }
+
+      .toolbar {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        align-items: stretch;
+        width: 100%;
+        margin-top: 4px;
+      }
+
+      .toolbar button,
+      .toolbar select {
+        width: 100%;
+        min-width: 0;
+        min-height: 46px;
+      }
+
+      .toolbar button {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1;
+      }
+
+      .toolbar-chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 8px 10px;
+        min-height: 44px;
+        background: rgba(8, 21, 31, 0.55);
+        font-size: 0.78rem;
+      }
+
+      .toolbar-chip input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        accent-color: #58b8e6;
+      }
+
+
+      .btn-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: 100%;
+      }
+
+      .btn-icon .ico {
+        font-size: 0.95rem;
+        line-height: 1;
+      }
+
+      .btn-icon .txt {
+        line-height: 1.1;
+      }
+
+      .toolbar #sort {
+        grid-column: auto;
+      }
+
+      .source-search {
+        margin-bottom: 10px;
+        border-radius: 10px;
+      }
+
+      .ghost-btn {
+        background: transparent;
+        border: 1px solid var(--accent-line);
+        color: var(--text);
+      }
+
+      .loading-grid {
+        margin-top: 16px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 12px;
+      }
+
+      .skeleton {
+        height: 170px;
+        border-radius: 14px;
+        border: 1px solid #26404e;
+        background: linear-gradient(90deg, #0c1d26 25%, #132d3a 38%, #0c1d26 58%);
+        background-size: 200% 100%;
+        animation: shimmer 1.2s infinite;
+      }
+
+      @keyframes shimmer {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+
+      .ok {
+        color: #65e3bd;
+      }
+
+      .warn {
+        color: var(--warn);
+      }
+
+      .danger {
+        color: var(--danger);
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 1200px) {
+        .top-row {
+          grid-template-columns: 1fr;
+        }
+
+        .controls {
+          grid-template-columns: repeat(6, minmax(0, 1fr));
+        }
+
+        .controls .field-small {
+          grid-column: span 2;
+        }
+
+        .controls .field-medium {
+          grid-column: span 3;
+        }
+
+        .controls .field-wide,
+        .controls .wide {
+          grid-column: span 6;
+        }
+
+
+        .controls .field-wide {
+          grid-column: span 4;
+        }
+
+        .toolbar {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 980px) {
+        .top-row {
+          grid-template-columns: 1fr;
+        }
+
+        .controls {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .controls .field-small {
+          grid-column: span 1;
+        }
+
+        .controls .field-medium {
+          grid-column: span 2;
+        }
+
+        .controls .field-wide,
+        .controls .wide {
+          grid-column: span 4;
+        }
+
+
+        .toolbar {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .stats {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .content-layout {
+          grid-template-columns: 1fr;
+        }
+
+        .source-list {
+          position: static;
+          max-height: none;
+        }
+
+        .source-grid {
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        }
+      }
+
+      @media (max-width: 620px) {
+        .controls {
+          grid-template-columns: 1fr;
+        }
+
+        .controls label,
+        .controls .field-small,
+        .controls .field-medium,
+        .controls .field-wide,
+        .controls .wide {
+          grid-column: 1 / -1;
+        }
+
+        .stats {
+          grid-template-columns: 1fr;
+        }
+
+        .toolbar {
+          width: 100%;
+          grid-template-columns: 1fr;
+        }
+
+        .toolbar button,
+        .toolbar select {
+          width: 100%;
+        }
+
+        .hero-collapsed .hero-compact-row {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .compact-quick {
+          grid-column: span 2;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .brand-row {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .brand-main {
+          width: 100%;
+        }
+
+        .brand-logo {
+          width: 92px;
+          height: 92px;
+        }
+
+        .top-actions {
+          align-self: flex-end;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <section class="hero">
+        <div class="brand-row">
+          <div class="brand-main">
+            <img
+              id="brand-logo"
+              class="brand-logo"
+              src="/static/madero.png"
+              alt="ISOTK OWNZ"
+            />
+            <div>
+              <span class="pill">Cyber Threat Radar</span>
+              <h1>MADERO INFONEWS</h1>
+              <p class="subtitle">Notícias de segurança da informação com classificação automática e atualização contínua.</p>
+            </div>
+          </div>
+          <div class="top-actions">
+            <button id="hero-toggle" class="hero-toggle-btn" type="button">Ocultar menu</button>
+            <button id="sidebar-toggle" class="sidebar-toggle-btn" type="button">Ocultar fontes</button>
+            <select id="density" class="density-select" title="Densidade dos cards">
+              <option value="analytic" selected>Modo analitico</option>
+              <option value="compact">Modo compacto</option>
+            </select>
+            <button id="gov-toggle" class="gov-toggle-btn" type="button">Governanca</button>
+            <button id="tone-toggle" class="icon-btn" type="button" aria-label="Alternar cor" title="Alternar cor">
+              <span aria-hidden="true">🌓</span>
+            </button>
+            <span id="tone-name" class="tone-label">Modo escuro</span>
+          </div>
+        </div>
+        <div class="hero-compact-row">
+           <div id="compact-quick" class="compact-quick">
+             <button class="compact-quick-btn active" type="button" data-compact="all" data-label="Todas" title="Todas">Todas</button>
+             <button class="compact-quick-btn" type="button" data-compact="microsoft" data-label="Microsoft" title="Microsoft">Microsoft</button>
+             <button class="compact-quick-btn" type="button" data-compact="linux" data-label="Linux" title="Linux">Linux</button>
+             <button class="compact-quick-btn" type="button" data-compact="apple" data-label="Apple" title="Apple">Apple</button>
+             <button class="compact-quick-btn" type="button" data-compact="x" data-label="X" title="X">X</button>
+             <button class="compact-quick-btn" type="button" data-compact="osint" data-label="OSINT" title="OSINT">OSINT</button>
+           </div>
+          <select id="compact-profile">
+            <option value="strict">Estrito</option>
+            <option value="balanced" selected>Balanceado</option>
+            <option value="wide">Amplo</option>
+          </select>
+          <button id="compact-reload" class="compact-btn" type="button">Atualizar</button>
+          <button id="compact-clear" class="compact-btn ghost-btn" type="button">Limpar</button>
+        </div>
+        <div class="quick-filter-row">
+          <button id="quick-all" class="quick-filter-btn active" type="button">Todas as fontes</button>
+          <button id="quick-microsoft" class="quick-filter-btn" type="button">Somente Microsoft</button>
+          <button id="quick-linux" class="quick-filter-btn" type="button">Somente Linux</button>
+          <button id="quick-apple" class="quick-filter-btn" type="button">Somente Apple</button>
+          <button id="quick-x" class="quick-filter-btn" type="button">Somente X</button>
+          <button id="quick-osint" class="quick-filter-btn" type="button">Somente OSINT</button>
+        </div>
+        <div class="top-row">
+          <div class="controls">
+            <p class="panel-title">Filtros de pesquisa</p>
+            <label class="field-small">
+              Limite
+              <input id="limit" type="number" min="1" max="200" value="20" />
+            </label>
+            <label class="field-small">
+              Últimas horas
+              <input id="hours" type="number" min="1" max="720" value="72" />
+            </label>
+            <label class="field-medium">
+              Categoria
+              <select id="category">
+                <option value="">Todas</option>
+              </select>
+            </label>
+            <label class="field-medium">
+              Fonte
+              <select id="source">
+                <option value="">Todas</option>
+              </select>
+            </label>
+            <input id="query" type="hidden" value="" />
+            <label class="field-small">
+              Perfil de fontes
+              <select id="source-profile">
+                <option value="strict">Estrito</option>
+                <option value="balanced" selected>Balanceado</option>
+                <option value="wide">Amplo</option>
+              </select>
+            </label>
+            <label class="field-medium">
+              OSINT subarea
+              <select id="osint-area">
+                <option value="">Todas</option>
+                <option value="username">Username</option>
+                <option value="email">Email</option>
+                <option value="domain">Domain/DNS</option>
+                <option value="breach">Breach</option>
+                <option value="geo">Geolocation</option>
+                <option value="metadata">Metadata/EXIF</option>
+              </select>
+            </label>
+            <div class="toolbar wide">
+              <select id="sort">
+                <option value="recent">Mais recentes</option>
+                <option value="oldest">Mais antigas</option>
+                <option value="cve">Com mais CVEs</option>
+              </select>
+              <label class="toolbar-chip">
+                <input id="cluster-toggle" type="checkbox" />
+                <span>Agrupar similares</span>
+              </label>
+              <button id="reload" title="Atualizar notícias">
+                <span class="btn-icon"><span class="ico">↻</span><span class="txt">Atualizar notícias</span></span>
+              </button>
+              <button id="clear" class="ghost-btn" type="button" title="Limpar filtros">
+                <span class="btn-icon"><span class="ico">✕</span><span class="txt">Limpar filtros</span></span>
+              </button>
+            </div>
+          </div>
+
+          <div class="stats">
+            <p class="panel-title">Resumo rápido</p>
+            <div class="metric">
+              <strong id="metric-news">0</strong>
+              <span>Notícias</span>
+            </div>
+            <div class="metric">
+              <strong id="metric-sources">0</strong>
+              <span>Fontes</span>
+            </div>
+            <div class="metric">
+              <strong id="metric-cves">0</strong>
+              <span>CVEs detectadas</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="status-row">
+      <p id="status" class="status">Carregando notícias...</p>
+        <div id="active-filters" class="active-filters"></div>
+      </div>
+      <p id="refresh" class="status"></p>
+      <div class="content-layout">
+        <aside id="source-panel" class="source-list">
+          <div class="source-head">
+            <h2>Fontes monitoradas (notícias por fonte)</h2>
+            <span class="source-hint">Tempo real</span>
+          </div>
+          <input id="source-search" class="source-search" type="text" placeholder="Filtrar fontes..." />
+          <div id="source-stats" class="source-grid"></div>
+        </aside>
+        <section class="news-column">
+          <div class="news-head">
+            <h2>Feed de notícias</h2>
+            <span id="news-meta">Aguardando atualização...</span>
+          </div>
+          <section id="news" class="news-grid"></section>
+        </section>
+      </div>
+      <section id="governance-panel" class="governance-panel" hidden>
+        <div class="gov-head">
+          <h2>Governanca de Fontes</h2>
+          <div class="source-links">
+            <button id="gov-save" type="button">Salvar politicas</button>
+            <a href="/governance/sources.csv" target="_blank" rel="noopener noreferrer">Exportar CSV</a>
+          </div>
+        </div>
+        <p id="gov-status" class="status">Edite confianca, relevancia, perfis e tags. Salvo em JSON local.</p>
+        <div class="gov-table-wrap">
+          <table class="gov-table">
+            <thead>
+              <tr>
+                <th>Fonte</th>
+                <th>Confianca</th>
+                <th>Relevancia</th>
+                <th>Perfis</th>
+                <th>Tags</th>
+              </tr>
+            </thead>
+            <tbody id="gov-body"></tbody>
+          </table>
+        </div>
+      </section>
+      <p class="status">Créditos: Marco Lima - Analista de Infraestrutura Senior</p>
+    </main>
+
+    <script>
+      const statusEl = document.getElementById("status");
+      const refreshEl = document.getElementById("refresh");
+      const newsEl = document.getElementById("news");
+      const limitEl = document.getElementById("limit");
+      const hoursEl = document.getElementById("hours");
+      const categoryEl = document.getElementById("category");
+      const sourceEl = document.getElementById("source");
+      const densityEl = document.getElementById("density");
+      const queryEl = document.getElementById("query");
+      const heroToggleEl = document.getElementById("hero-toggle");
+      const sidebarToggleEl = document.getElementById("sidebar-toggle");
+      const sourceProfileEl = document.getElementById("source-profile");
+      const osintAreaEl = document.getElementById("osint-area");
+      const toneToggleEl = document.getElementById("tone-toggle");
+      const toneNameEl = document.getElementById("tone-name");
+      const sortEl = document.getElementById("sort");
+      const clusterToggleEl = document.getElementById("cluster-toggle");
+      const clearEl = document.getElementById("clear");
+      const reloadEl = document.getElementById("reload");
+      const quickAllEl = document.getElementById("quick-all");
+      const quickMicrosoftEl = document.getElementById("quick-microsoft");
+      const quickLinuxEl = document.getElementById("quick-linux");
+      const quickAppleEl = document.getElementById("quick-apple");
+      const quickXEl = document.getElementById("quick-x");
+      const quickOsintEl = document.getElementById("quick-osint");
+      const compactQuickEl = document.getElementById("compact-quick");
+      const compactProfileEl = document.getElementById("compact-profile");
+      const compactReloadEl = document.getElementById("compact-reload");
+      const compactClearEl = document.getElementById("compact-clear");
+      const govToggleEl = document.getElementById("gov-toggle");
+      const governancePanelEl = document.getElementById("governance-panel");
+      const govBodyEl = document.getElementById("gov-body");
+      const govSaveEl = document.getElementById("gov-save");
+      const govStatusEl = document.getElementById("gov-status");
+      const logoEl = document.getElementById("brand-logo");
+      const activeFiltersEl = document.getElementById("active-filters");
+      const metricNewsEl = document.getElementById("metric-news");
+      const metricSourcesEl = document.getElementById("metric-sources");
+      const metricCvesEl = document.getElementById("metric-cves");
+      const newsMetaEl = document.getElementById("news-meta");
+      const sourceSearchEl = document.getElementById("source-search");
+      const sourceStatsEl = document.getElementById("source-stats");
+
+      let cachedNews = [];
+      let nextRefreshAt = Date.now() + 300000;
+      let searchDebounce;
+      let sourceSearchDebounce;
+      let quickSourceFilter = "";
+      let quickFilterLabel = "";
+      let quickQueryFilter = "";
+      let isLoadingNews = false;
+      let pendingReload = false;
+      let governanceRows = [];
+
+      function applyTheme(tone) {
+        const legacyToneMap = {
+          blue: "dark",
+          green: "dark",
+          white: "bw",
+          amber: "dark",
+        };
+        const normalizedTone = legacyToneMap[tone] || tone;
+        const validTone = ["dark", "bw", "matrix"].includes(normalizedTone) ? normalizedTone : "dark";
+        document.body.setAttribute("data-tone", validTone);
+        document.body.setAttribute("data-mode", "dark");
+        const toneNames = {
+          dark: "Modo escuro",
+          bw: "Preto e branco",
+          matrix: "Matrix",
+        };
+        toneNameEl.textContent = toneNames[validTone] || "Modo escuro";
+        localStorage.setItem("ui_tone", validTone);
+      }
+
+      function applyHeroCollapsed(collapsed) {
+        document.body.classList.toggle("hero-collapsed", Boolean(collapsed));
+        heroToggleEl.textContent = collapsed ? "Mostrar menu" : "Ocultar menu";
+        localStorage.setItem("ui_hero_collapsed", collapsed ? "1" : "0");
+      }
+
+      function applySidebarCollapsed(collapsed) {
+        document.body.classList.toggle("sidebar-collapsed", Boolean(collapsed));
+        sidebarToggleEl.textContent = collapsed ? "Mostrar fontes" : "Ocultar fontes";
+        localStorage.setItem("ui_sidebar_collapsed", collapsed ? "1" : "0");
+      }
+
+      function cycleTone() {
+        toneToggleEl.classList.add("spin");
+        setTimeout(() => toneToggleEl.classList.remove("spin"), 220);
+        const current = document.body.getAttribute("data-tone") || "dark";
+        const order = ["dark", "bw", "matrix"];
+        const next = order[(order.indexOf(current) + 1) % order.length];
+        applyTheme(next);
+      }
+
+      function fmtDate(dateISO) {
+        const date = new Date(dateISO);
+        return date.toLocaleString("pt-BR", { hour12: false });
+      }
+
+      function sanitize(text) {
+        return (text || "").replace(/<[^>]*>/g, "").trim();
+      }
+
+      function escapeHtml(text) {
+        return String(text || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function safeHttpUrl(url) {
+        const raw = String(url || "").trim();
+        if (!raw) return "#";
+        try {
+          const parsed = new URL(raw, window.location.origin);
+          return ["http:", "https:"].includes(parsed.protocol) ? parsed.href : "#";
+        } catch (_) {
+          return "#";
+        }
+      }
+
+      function getPlaceholderStyle(category) {
+        const c = (category || "").toLowerCase();
+        if (c.includes("malware")) return "linear-gradient(135deg, #5e2a2a, #281717)";
+        if (c.includes("ransom")) return "linear-gradient(135deg, #5a1f37, #251421)";
+        if (c.includes("vulner")) return "linear-gradient(135deg, #5c471f, #2a2315)";
+        if (c.includes("cloud")) return "linear-gradient(135deg, #1f4a66, #182b3f)";
+        if (c.includes("osint") || c.includes("recon")) return "linear-gradient(135deg, #1f5f58, #17312e)";
+        if (c.includes("privacy")) return "linear-gradient(135deg, #2e3862, #1b223d)";
+        if (c.includes("supply")) return "linear-gradient(135deg, #2b5f4b, #17352c)";
+        if (c.includes("zero") || c.includes("day")) return "linear-gradient(135deg, #51305c, #27192e)";
+        return "linear-gradient(135deg, #22384b, #1a2635)";
+      }
+
+      function renderNewsPlaceholder(item) {
+        const category = escapeHtml(sanitize(item.category || "Seguranca"));
+        const title = escapeHtml(sanitize(item.title || "Noticia de seguranca").slice(0, 92));
+        const bg = getPlaceholderStyle(item.category || "");
+        return `<div class="news-thumb-placeholder" style="--ph-bg:${bg}"><div class="news-ph-category">${category}</div><div class="news-ph-title">${title}</div></div>`;
+      }
+
+      function imageErrorFallback(imgEl) {
+        const title = imgEl?.dataset?.title || "Noticia de seguranca";
+        const category = imgEl?.dataset?.category || "Seguranca";
+        imgEl.outerHTML = renderNewsPlaceholder({ title, category });
+      }
+
+      function fmtAgo(dateISO) {
+        if (!dateISO) return "sem data";
+        const now = Date.now();
+        const then = new Date(dateISO).getTime();
+        const diffMin = Math.max(0, Math.floor((now - then) / 60000));
+        if (diffMin < 60) return `${diffMin} min atrás`;
+        const diffHour = Math.floor(diffMin / 60);
+        if (diffHour < 24) return `${diffHour} h atrás`;
+        const diffDay = Math.floor(diffHour / 24);
+        return `${diffDay} d atrás`;
+      }
+
+      function normalizeCategoryKey(value) {
+        return (value || "")
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "");
+      }
+
+      function getCategoryPalette(category) {
+        const palettes = {
+          ransomware: { border: "#ff5a7a", bg: "rgba(255, 90, 122, 0.18)", text: "#ffd5df" },
+          vulnerabilidades: { border: "#ffb547", bg: "rgba(255, 181, 71, 0.2)", text: "#ffe9c4" },
+          malware: { border: "#8b5cf6", bg: "rgba(139, 92, 246, 0.2)", text: "#e4d8ff" },
+          phishing: { border: "#22d3ee", bg: "rgba(34, 211, 238, 0.2)", text: "#d2f8ff" },
+          osint: { border: "#2dd4bf", bg: "rgba(45, 212, 191, 0.2)", text: "#d6fffa" },
+          "data-breach": { border: "#f97316", bg: "rgba(249, 115, 22, 0.2)", text: "#ffe3d0" },
+          "cloud-security": { border: "#38bdf8", bg: "rgba(56, 189, 248, 0.2)", text: "#d9f4ff" },
+          "threat-intelligence": { border: "#14b8a6", bg: "rgba(20, 184, 166, 0.2)", text: "#d3fffa" },
+          "governanca-e-compliance": { border: "#84cc16", bg: "rgba(132, 204, 22, 0.2)", text: "#ebffd0" },
+          geral: { border: "#64748b", bg: "rgba(100, 116, 139, 0.22)", text: "#e2e8f0" },
+        };
+        const key = normalizeCategoryKey(category);
+        return palettes[key] || palettes.geral;
+      }
+
+      function populateCategories(categories) {
+        const selected = categoryEl.value;
+        categoryEl.innerHTML = '<option value="">Todas</option>';
+        for (const category of categories) {
+          const option = document.createElement("option");
+          option.value = category;
+          option.textContent = category;
+          categoryEl.appendChild(option);
+        }
+        categoryEl.value = selected;
+      }
+
+      function populateSources(sources) {
+        const selected = sourceEl.value;
+        sourceEl.innerHTML = '<option value="">Todas</option>';
+        for (const source of sources) {
+          const option = document.createElement("option");
+          option.value = source.id;
+          option.textContent = source.name;
+          sourceEl.appendChild(option);
+        }
+        sourceEl.value = selected;
+      }
+
+      function updateMetrics(items) {
+        metricNewsEl.textContent = String(items.length);
+        metricSourcesEl.textContent = String(new Set(items.map((item) => item.source)).size);
+        metricCvesEl.textContent = String(new Set(items.flatMap((item) => item.cves || [])).size);
+      }
+
+      function renderLoading() {
+        newsEl.className = "loading-grid";
+        newsEl.innerHTML = "";
+        for (let i = 0; i < 6; i++) {
+          const el = document.createElement("div");
+          el.className = "skeleton";
+          newsEl.appendChild(el);
+        }
+      }
+
+      function renderActiveFilters() {
+        const chips = [];
+        if (categoryEl.value.trim()) chips.push(`Categoria: ${categoryEl.value.trim()}`);
+        if (sourceEl.value.trim()) {
+          const sourceName = sourceEl.options[sourceEl.selectedIndex]?.text || sourceEl.value;
+          chips.push(`Fonte: ${sourceName}`);
+        }
+        if (queryEl.value.trim()) chips.push(`Busca: ${queryEl.value.trim()}`);
+        if (sourceProfileEl.value.trim()) chips.push(`Perfil: ${sourceProfileEl.value.trim()}`);
+        if (osintAreaEl.value.trim()) chips.push(`OSINT: ${osintAreaEl.value.trim()}`);
+        if (quickFilterLabel) chips.push(`Atalho: ${quickFilterLabel}`);
+        if (hoursEl.value.trim()) chips.push(`Janela: ${hoursEl.value.trim()}h`);
+        activeFiltersEl.innerHTML = chips.map((text) => `<span class="filter-chip">${text}</span>`).join("");
+      }
+
+      function sortItems(items) {
+        const mode = sortEl.value;
+        const cloned = [...items];
+        if (mode === "oldest") {
+          return cloned.sort((a, b) => new Date(a.published_at) - new Date(b.published_at));
+        }
+        if (mode === "cve") {
+          return cloned.sort((a, b) => (b.cves?.length || 0) - (a.cves?.length || 0));
+        }
+        return cloned.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+      }
+
+      function cardPriority(item) {
+        const cves = Array.isArray(item.cves) ? item.cves.length : 0;
+        const category = String(item.category || "").toLowerCase();
+        const confidence = String(item.source_confidence || "media").toLowerCase();
+        let score = 0;
+        if (cves > 0) score += 3;
+        if (cves > 2) score += 1;
+        if (category.includes("ransom") || category.includes("vulner")) score += 2;
+        if (category.includes("malware") || category.includes("phishing")) score += 1;
+        if (confidence === "alta") score += 1;
+        if (score >= 5) return { label: "Prioridade alta", cls: "priority-high" };
+        if (score >= 3) return { label: "Prioridade media", cls: "priority-medium" };
+        return { label: "Prioridade baixa", cls: "priority-low" };
+      }
+
+      function clusterKey(item) {
+        const cves = Array.isArray(item.cves) ? item.cves : [];
+        if (cves.length) return `cve:${cves[0]}`;
+        const title = sanitize(item.title || "").toLowerCase().replace(/[^a-z0-9\s]/g, " ");
+        const parts = title.split(/\s+/).filter((w) => w.length > 3).slice(0, 6);
+        return `t:${parts.join("-") || "geral"}`;
+      }
+
+      function groupSimilar(items) {
+        const map = new Map();
+        for (const item of sortItems(items)) {
+          const key = clusterKey(item);
+          if (!map.has(key)) map.set(key, []);
+          map.get(key).push(item);
+        }
+        return [...map.values()].sort((a, b) => b.length - a.length || new Date(b[0].published_at) - new Date(a[0].published_at));
+      }
+
+      function buildNewsCard(item) {
+        const card = document.createElement("article");
+        card.className = "news-card";
+        const palette = getCategoryPalette(item.category);
+        card.style.borderLeftColor = palette.border;
+        const cves = Array.isArray(item.cves) ? item.cves : [];
+        const safeTitle = escapeHtml(sanitize(item.title || "Noticia de seguranca"));
+        const safeCategory = escapeHtml(sanitize(item.category || "Seguranca"));
+        const safeImageUrl = escapeHtml(safeHttpUrl(item.image_url || ""));
+        const safeLinkUrl = escapeHtml(safeHttpUrl(item.link || ""));
+        const safeSummary = escapeHtml(sanitize(item.summary || "")).slice(0, 240);
+        const safeSource = escapeHtml(sanitize(item.source || "Fonte"));
+        const safeConfidence = escapeHtml(String(item.source_confidence || "media"));
+        const priority = cardPriority(item);
+        const imageHtml = item.image_url
+          ? `<img class="news-thumb" src="${safeImageUrl}" alt="Imagem da notícia" loading="lazy" referrerpolicy="no-referrer" data-title="${safeTitle}" data-category="${safeCategory}" onerror="imageErrorFallback(this)" />`
+          : renderNewsPlaceholder(item);
+        const cveHtml = cves.length
+          ? `<div class="cve-wrap">${cves.map((cve) => `<span class="cve-chip">${cve}</span>`).join("")}</div>`
+          : "";
+        card.innerHTML = `
+          <div class="card-head">
+            <span class="tag" style="background:${palette.bg};border-color:${palette.border};color:${palette.text};">${safeCategory}</span>
+            <span class="priority-chip ${priority.cls}">${priority.label}</span>
+          </div>
+          ${imageHtml}
+          <h3><a href="${safeLinkUrl}" target="_blank" rel="noopener noreferrer">${safeTitle}</a></h3>
+          <p>${safeSummary}</p>
+          ${cveHtml}
+          <div class="meta">
+            <span>${safeSource}</span>
+            <span>${fmtDate(item.published_at)}</span>
+          </div>
+          <div class="card-hoverbar">
+            <span class="card-hover-meta">${safeSource} • confiança ${safeConfidence}</span>
+            <span class="card-hover-actions">
+              <a href="${safeLinkUrl}" target="_blank" rel="noopener noreferrer">Abrir</a>
+              <button type="button" data-action="copy-link" data-link="${safeLinkUrl}">Copiar</button>
+            </span>
+          </div>
+        `;
+        return card;
+      }
+
+
+      function setQuickProfile(profile) {
+        const normalized = ["strict", "balanced", "wide"].includes(profile) ? profile : "balanced";
+        if (sourceProfileEl.value !== normalized) {
+          sourceProfileEl.value = normalized;
+          compactProfileEl.value = normalized;
+          loadSources();
+          loadSourceStats();
+        }
+      }
+
+      function syncCompactFromMain() {
+        compactProfileEl.value = sourceProfileEl.value || "balanced";
+        const map = {
+          "": "all",
+          Microsoft: "microsoft",
+          Linux: "linux",
+          Apple: "apple",
+          X: "x",
+          OSINT: "osint",
+        };
+        const active = map[quickFilterLabel] || "all";
+        for (const btn of compactQuickEl.querySelectorAll(".compact-quick-btn")) {
+          btn.classList.toggle("active", btn.getAttribute("data-compact") === active);
+        }
+      }
+
+      function updateRefreshClock() {
+        const remainMs = Math.max(0, nextRefreshAt - Date.now());
+        const minutes = Math.floor(remainMs / 60000);
+        const seconds = Math.floor((remainMs % 60000) / 1000);
+        const padded = String(seconds).padStart(2, "0");
+        refreshEl.textContent = `Próxima atualização automática em ${minutes}:${padded}`;
+      }
+
+      function render(items) {
+        newsEl.className = densityEl.value === "compact" ? "news-grid compact" : "news-grid";
+        newsEl.innerHTML = "";
+        updateMetrics(items);
+
+        if (!items.length) {
+          statusEl.innerHTML = '<span class="warn">Nenhuma notícia encontrada para este filtro.</span>';
+          return;
+        }
+
+        if (clusterToggleEl.checked) {
+          const groups = groupSimilar(items);
+          for (const group of groups) {
+            if (group.length === 1) {
+              newsEl.appendChild(buildNewsCard(group[0]));
+              continue;
+            }
+            const wrapper = document.createElement("article");
+            wrapper.className = "cluster-card";
+            const first = group[0];
+            const keyTitle = escapeHtml(sanitize(first.title || "Grupo"));
+            wrapper.innerHTML = `
+              <div class="cluster-head">
+                <b>${group.length} relacionadas • ${keyTitle.slice(0, 90)}</b>
+                <button class="cluster-toggle" type="button" data-open="0">Expandir</button>
+              </div>
+              <div class="cluster-items"></div>
+            `;
+            const itemsEl = wrapper.querySelector(".cluster-items");
+            if (itemsEl) {
+              for (const item of group) itemsEl.appendChild(buildNewsCard(item));
+            }
+            const btn = wrapper.querySelector(".cluster-toggle");
+            if (btn && itemsEl) {
+              btn.addEventListener("click", () => {
+                const isOpen = btn.getAttribute("data-open") === "1";
+                btn.setAttribute("data-open", isOpen ? "0" : "1");
+                btn.textContent = isOpen ? "Expandir" : "Recolher";
+                itemsEl.classList.toggle("open", !isOpen);
+              });
+            }
+            newsEl.appendChild(wrapper);
+          }
+        } else {
+          for (const item of sortItems(items)) {
+            newsEl.appendChild(buildNewsCard(item));
+          }
+        }
+      }
+
+      async function loadNews() {
+        if (isLoadingNews) {
+          pendingReload = true;
+          return;
+        }
+        isLoadingNews = true;
+        const limit = Math.max(1, Math.min(200, Number(limitEl.value) || 20));
+        const hours = Math.max(1, Math.min(720, Number(hoursEl.value) || 72));
+        const category = categoryEl.value.trim();
+        const source = sourceEl.value.trim();
+        const q = queryEl.value.trim();
+        const sourceProfile = sourceProfileEl.value.trim() || "balanced";
+        const osintArea = osintAreaEl.value.trim();
+
+        const params = new URLSearchParams({ limit: String(limit), hours: String(hours) });
+        params.set("source_profile", sourceProfile);
+        if (category) params.set("category", category);
+        if (source) params.set("source", source);
+        if (quickSourceFilter) params.set("source", quickSourceFilter);
+        const mergedQ = [q, quickQueryFilter].filter(Boolean).join(" ").trim();
+        if (mergedQ) params.set("q", mergedQ);
+        if (osintArea) params.set("osint_area", osintArea);
+
+        statusEl.textContent = "Atualizando notícias...";
+        renderLoading();
+        renderActiveFilters();
+
+        try {
+          const response = await fetch(`/news?${params.toString()}`);
+          if (!response.ok) {
+            let detail = `HTTP ${response.status}`;
+            try {
+              const body = await response.json();
+              if (body && body.detail) {
+                detail = body.detail;
+              }
+            } catch (_) {
+              detail = `HTTP ${response.status}`;
+            }
+            throw new Error(detail);
+          }
+
+          cachedNews = await response.json();
+          render(cachedNews);
+          await loadSourceStats();
+          statusEl.innerHTML = `<span class="ok">${cachedNews.length}</span> notícias exibidas. Última atualização: ${new Date().toLocaleTimeString("pt-BR", { hour12: false })}`;
+          newsMetaEl.textContent = `${cachedNews.length} itens carregados`;
+          nextRefreshAt = Date.now() + 300000;
+          updateRefreshClock();
+        } catch (error) {
+          statusEl.innerHTML = `<span class="danger">Erro ao carregar notícias: ${error.message}</span>`;
+          newsMetaEl.textContent = "Falha na atualização";
+          newsEl.className = "news-grid";
+          newsEl.innerHTML = "";
+          updateMetrics([]);
+        } finally {
+          isLoadingNews = false;
+          if (pendingReload) {
+            pendingReload = false;
+            loadNews();
+          }
+        }
+      }
+
+      async function loadCategories() {
+        try {
+          const response = await fetch("/categories");
+          if (!response.ok) return;
+          const data = await response.json();
+          const categories = Array.isArray(data.categories) ? data.categories : [];
+          populateCategories(categories);
+        } catch (_) {
+          return;
+        }
+      }
+
+      async function loadSources() {
+        try {
+          const response = await fetch(`/sources?source_profile=${encodeURIComponent(sourceProfileEl.value || "balanced")}`);
+          if (!response.ok) return;
+          const data = await response.json();
+          const sources = Array.isArray(data.sources) ? data.sources : [];
+          populateSources(sources);
+        } catch (_) {
+          return;
+        }
+      }
+
+      async function loadSourceStats() {
+        try {
+          const response = await fetch(`/sources/stats?source_profile=${encodeURIComponent(sourceProfileEl.value || "balanced")}`);
+          if (!response.ok) return;
+          const data = await response.json();
+          const rows = Array.isArray(data.sources) ? data.sources : [];
+          const search = sourceSearchEl.value.trim().toLowerCase();
+
+          const visibleRows = rows
+            .filter((row) => row.items > 0 || row.collecting)
+            .filter((row) => !search || row.name.toLowerCase().includes(search) || row.id.toLowerCase().includes(search))
+            .slice(0, 30);
+
+          sourceStatsEl.innerHTML = visibleRows
+            .map((row) => {
+              const latest = row.latest_title ? escapeHtml(row.latest_title) : "sem notícia recente";
+              const confidence = escapeHtml(row.confidence || "media");
+              const status = row.collecting ? `${confidence} • ${fmtAgo(row.last_published_at)}` : `${confidence} • referencial`;
+              const feedLink = row.feed_url
+                ? `<a href="${row.feed_url}" target="_blank" rel="noopener noreferrer">Feed</a>`
+                : `<span class="source-disabled">Sem feed</span>`;
+
+              return `
+                <article class="source-item" data-source-id="${row.id}">
+                  <div class="source-main">
+                    <b title="${escapeHtml(row.name)}">${escapeHtml(row.name)}</b>
+                    <div class="source-sub" title="${latest}">${status}</div>
+                  </div>
+                  <strong>${row.items}</strong>
+                  <div class="source-links">
+                    <button type="button" data-action="filter" data-source-id="${row.id}">Filtrar</button>
+                    <a href="${row.site_url}" target="_blank" rel="noopener noreferrer">Site</a>
+                    ${feedLink}
+                  </div>
+                </article>
+              `;
+            })
+            .join("");
+
+          if (!sourceStatsEl.innerHTML) {
+            sourceStatsEl.innerHTML = '<div class="source-item"><span>Sem notícias no cache</span><strong>0</strong></div>';
+          }
+        } catch (_) {
+          return;
+        }
+      }
+
+      function parseListCell(value) {
+        return String(value || "")
+          .split(",")
+          .map((x) => x.trim())
+          .filter(Boolean);
+      }
+
+      function renderGovernanceTable(rows) {
+        governanceRows = rows;
+        govBodyEl.innerHTML = rows
+          .map((row) => {
+            const profiles = (row.profiles || []).join(",");
+            const tags = (row.tags || []).join(",");
+            return `
+              <tr data-id="${escapeHtml(row.id)}">
+                <td><b>${escapeHtml(row.name)}</b><br /><span class="source-sub">${escapeHtml(row.id)}</span></td>
+                <td>
+                  <select data-field="confidence">
+                    <option value="alta" ${row.confidence === "alta" ? "selected" : ""}>alta</option>
+                    <option value="media" ${row.confidence === "media" ? "selected" : ""}>media</option>
+                    <option value="baixa" ${row.confidence === "baixa" ? "selected" : ""}>baixa</option>
+                  </select>
+                </td>
+                <td>
+                  <select data-field="relevance">
+                    <option value="alta" ${row.relevance === "alta" ? "selected" : ""}>alta</option>
+                    <option value="media" ${row.relevance === "media" ? "selected" : ""}>media</option>
+                    <option value="baixa" ${row.relevance === "baixa" ? "selected" : ""}>baixa</option>
+                  </select>
+                </td>
+                <td><input data-field="profiles" value="${escapeHtml(profiles)}" placeholder="strict,balanced,wide" /></td>
+                <td><input data-field="tags" value="${escapeHtml(tags)}" placeholder="official,threat-intel" /></td>
+              </tr>
+            `;
+          })
+          .join("");
+      }
+
+      async function loadGovernance() {
+        try {
+          const response = await fetch("/governance/sources");
+          if (!response.ok) return;
+          const data = await response.json();
+          const rows = Array.isArray(data.sources) ? data.sources : [];
+          renderGovernanceTable(rows);
+          govStatusEl.textContent = `Carregado: ${rows.length} fontes`;
+        } catch (_) {
+          govStatusEl.textContent = "Falha ao carregar governanca";
+        }
+      }
+
+      async function saveGovernance() {
+        const payload = [];
+        for (const tr of govBodyEl.querySelectorAll("tr[data-id]")) {
+          const id = tr.getAttribute("data-id");
+          if (!id) continue;
+          const confidence = tr.querySelector('[data-field="confidence"]')?.value || "media";
+          const relevance = tr.querySelector('[data-field="relevance"]')?.value || "media";
+          const profiles = parseListCell(tr.querySelector('[data-field="profiles"]')?.value || "balanced,wide");
+          const tags = parseListCell(tr.querySelector('[data-field="tags"]')?.value || "");
+          payload.push({ id, confidence, relevance, profiles, tags });
+        }
+
+        govStatusEl.textContent = "Salvando politicas...";
+        const response = await fetch("/governance/policies", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (!response.ok) {
+          const body = await response.json().catch(() => ({}));
+          throw new Error(body.detail || `HTTP ${response.status}`);
+        }
+        const result = await response.json();
+        govStatusEl.textContent = `Politicas salvas (${result.saved}) em JSON local`;
+        loadSources();
+        loadSourceStats();
+        loadNews();
+      }
+
+      govToggleEl.addEventListener("click", async () => {
+        const willShow = governancePanelEl.hasAttribute("hidden");
+        if (willShow) {
+          governancePanelEl.removeAttribute("hidden");
+          await loadGovernance();
+        } else {
+          governancePanelEl.setAttribute("hidden", "");
+        }
+      });
+      govSaveEl.addEventListener("click", () => {
+        saveGovernance().catch((error) => {
+          govStatusEl.textContent = `Erro ao salvar: ${error.message}`;
+        });
+      });
+      reloadEl.addEventListener("click", loadNews);
+      categoryEl.addEventListener("change", loadNews);
+      sourceEl.addEventListener("change", loadNews);
+      sourceProfileEl.addEventListener("change", () => {
+        compactProfileEl.value = sourceProfileEl.value;
+        loadSources();
+        loadSourceStats();
+        loadNews();
+      });
+      osintAreaEl.addEventListener("change", loadNews);
+      sortEl.addEventListener("change", () => render(cachedNews));
+      densityEl.addEventListener("change", () => {
+        localStorage.setItem("ui_density", densityEl.value);
+        render(cachedNews);
+      });
+      clusterToggleEl.addEventListener("change", () => {
+        localStorage.setItem("ui_cluster_mode", clusterToggleEl.checked ? "1" : "0");
+        render(cachedNews);
+      });
+      heroToggleEl.addEventListener("click", () => {
+        const isCollapsed = document.body.classList.contains("hero-collapsed");
+        applyHeroCollapsed(!isCollapsed);
+      });
+      sidebarToggleEl.addEventListener("click", () => {
+        const isCollapsed = document.body.classList.contains("sidebar-collapsed");
+        applySidebarCollapsed(!isCollapsed);
+      });
+      toneToggleEl.addEventListener("click", cycleTone);
+      clearEl.addEventListener("click", () => {
+        categoryEl.value = "";
+        sourceEl.value = "";
+        queryEl.value = "";
+        sourceProfileEl.value = "balanced";
+        osintAreaEl.value = "";
+        clusterToggleEl.checked = false;
+        localStorage.setItem("ui_cluster_mode", "0");
+        hoursEl.value = "72";
+        limitEl.value = "20";
+        sortEl.value = "recent";
+        quickSourceFilter = "";
+        quickFilterLabel = "";
+        quickQueryFilter = "";
+        quickAllEl.classList.add("active");
+        quickMicrosoftEl.classList.remove("active");
+        quickLinuxEl.classList.remove("active");
+        quickAppleEl.classList.remove("active");
+        quickXEl.classList.remove("active");
+        quickOsintEl.classList.remove("active");
+        applyTheme("dark");
+        syncCompactFromMain();
+        loadNews();
+      });
+      quickAllEl.addEventListener("click", () => {
+        setQuickProfile("balanced");
+        quickSourceFilter = "";
+        quickFilterLabel = "";
+        quickQueryFilter = "";
+        quickAllEl.classList.add("active");
+        quickMicrosoftEl.classList.remove("active");
+        quickLinuxEl.classList.remove("active");
+        quickAppleEl.classList.remove("active");
+        quickXEl.classList.remove("active");
+        quickOsintEl.classList.remove("active");
+        syncCompactFromMain();
+        loadNews();
+      });
+      quickMicrosoftEl.addEventListener("click", () => {
+        setQuickProfile("balanced");
+        quickQueryFilter = "";
+        quickSourceFilter = [
+          "msrc",
+          "msrc-update-guide",
+          "microsoft-security-blog",
+          "microsoft-threat-intel-blog",
+          "azure-security-blog",
+        ].join(",");
+        quickFilterLabel = "Microsoft";
+        quickMicrosoftEl.classList.add("active");
+        quickAllEl.classList.remove("active");
+        quickLinuxEl.classList.remove("active");
+        quickAppleEl.classList.remove("active");
+        quickXEl.classList.remove("active");
+        quickOsintEl.classList.remove("active");
+        syncCompactFromMain();
+        loadNews();
+      });
+      quickLinuxEl.addEventListener("click", () => {
+        setQuickProfile("balanced");
+        quickSourceFilter = "";
+        quickQueryFilter = "linux ubuntu debian red hat rhel suse kernel openssl nginx openssh";
+        quickFilterLabel = "Linux";
+        quickLinuxEl.classList.add("active");
+        quickAllEl.classList.remove("active");
+        quickMicrosoftEl.classList.remove("active");
+        quickAppleEl.classList.remove("active");
+        quickXEl.classList.remove("active");
+        quickOsintEl.classList.remove("active");
+        syncCompactFromMain();
+        loadNews();
+      });
+      quickAppleEl.addEventListener("click", () => {
+        setQuickProfile("balanced");
+        quickSourceFilter = "";
+        quickQueryFilter = "apple ios macos ipados safari xcode";
+        quickFilterLabel = "Apple";
+        quickAppleEl.classList.add("active");
+        quickAllEl.classList.remove("active");
+        quickMicrosoftEl.classList.remove("active");
+        quickLinuxEl.classList.remove("active");
+        quickXEl.classList.remove("active");
+        quickOsintEl.classList.remove("active");
+        syncCompactFromMain();
+        loadNews();
+      });
+      quickXEl.addEventListener("click", () => {
+        setQuickProfile("wide");
+        quickSourceFilter = [
+          "x-msftsecresponse",
+          "x-cisagov",
+          "x-thehackernews",
+          "x-swiftonsecurity",
+          "x-google-cloud-tech",
+          "x-crowdstrike",
+        ].join(",");
+        quickQueryFilter = "";
+        quickFilterLabel = "X";
+        quickXEl.classList.add("active");
+        quickAllEl.classList.remove("active");
+        quickMicrosoftEl.classList.remove("active");
+        quickLinuxEl.classList.remove("active");
+        quickAppleEl.classList.remove("active");
+        quickOsintEl.classList.remove("active");
+        syncCompactFromMain();
+        loadNews();
+      });
+      quickOsintEl.addEventListener("click", () => {
+        setQuickProfile("balanced");
+        quickSourceFilter = "";
+        quickQueryFilter = "osint open source intelligence reconnaissance google dork shodan censys whois dns subdomain geolocation exif metadata username email";
+        quickFilterLabel = "OSINT";
+        quickOsintEl.classList.add("active");
+        quickAllEl.classList.remove("active");
+        quickMicrosoftEl.classList.remove("active");
+        quickLinuxEl.classList.remove("active");
+        quickAppleEl.classList.remove("active");
+        quickXEl.classList.remove("active");
+        syncCompactFromMain();
+        loadNews();
+      });
+      sourceStatsEl.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) return;
+        const button = target.closest("button[data-action='filter']");
+        if (!button) return;
+        const sourceId = button.getAttribute("data-source-id");
+        if (!sourceId) return;
+        sourceEl.value = sourceId;
+        loadNews();
+      });
+      newsEl.addEventListener("click", async (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) return;
+        const button = target.closest("button[data-action='copy-link']");
+        if (!button) return;
+        event.preventDefault();
+        const link = button.getAttribute("data-link") || "";
+        if (!link || link === "#") return;
+        try {
+          await navigator.clipboard.writeText(link);
+          statusEl.innerHTML = '<span class="ok">Link copiado.</span>';
+        } catch (_) {
+          statusEl.innerHTML = '<span class="warn">Nao foi possivel copiar o link.</span>';
+        }
+      });
+      sourceSearchEl.addEventListener("input", () => {
+        clearTimeout(sourceSearchDebounce);
+        sourceSearchDebounce = setTimeout(loadSourceStats, 200);
+      });
+      queryEl.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          loadNews();
+        }
+      });
+      queryEl.addEventListener("input", () => {
+        clearTimeout(searchDebounce);
+        searchDebounce = setTimeout(loadNews, 500);
+      });
+      compactProfileEl.addEventListener("change", () => {
+        sourceProfileEl.value = compactProfileEl.value;
+        loadSources();
+        loadSourceStats();
+        loadNews();
+      });
+      compactQuickEl.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) return;
+        const btn = target.closest("button[data-compact]");
+        if (!btn) return;
+        const action = btn.getAttribute("data-compact") || "all";
+        if (action === "microsoft") quickMicrosoftEl.click();
+        else if (action === "linux") quickLinuxEl.click();
+        else if (action === "apple") quickAppleEl.click();
+        else if (action === "x") quickXEl.click();
+        else if (action === "osint") quickOsintEl.click();
+        else quickAllEl.click();
+      });
+      compactReloadEl.addEventListener("click", () => {
+        loadNews();
+      });
+      compactClearEl.addEventListener("click", () => {
+        clearEl.click();
+      });
+
+      setInterval(loadNews, 300000);
+      setInterval(updateRefreshClock, 1000);
+
+      logoEl.addEventListener("error", () => {
+        logoEl.style.display = "none";
+      });
+
+      applyTheme(localStorage.getItem("ui_tone") || "dark");
+      densityEl.value = localStorage.getItem("ui_density") || "analytic";
+      clusterToggleEl.checked = localStorage.getItem("ui_cluster_mode") === "1";
+      applyHeroCollapsed(localStorage.getItem("ui_hero_collapsed") === "1");
+      applySidebarCollapsed(localStorage.getItem("ui_sidebar_collapsed") === "1");
+      syncCompactFromMain();
+      loadCategories();
+      loadSources();
+      loadSourceStats();
+      loadNews();
+    </script>
+  </body>
+</html>
