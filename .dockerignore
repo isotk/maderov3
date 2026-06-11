@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+.git/
+.gitignore
+.vscode/
+.idea/
+*.md
+!requirements.txt
+docker-compose.yml
+publica.sh
+subir.sh
+source_policies.json
+.env
+.env.*

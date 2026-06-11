@@ -3,12 +3,17 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import csv
+import hashlib
+import hmac
 import io
 import json
 import logging
 import os
 import re
+import secrets
 import time
+from collections import OrderedDict
+from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
@@ -18,7 +23,7 @@ from urllib.parse import quote
 
 import feedparser
 import httpx
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Depends, Header
 from fastapi.responses import FileResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
@@ -47,15 +52,47 @@ class NewsItem(BaseModel):
 class SourcePolicyOverride(BaseModel):
     id: str
     confidence: str
-    relevance: str
     profiles: List[str]
     tags: List[str] = Field(default_factory=list)
+
+
+class MetricsModel(BaseModel):
+    refresh_runs: int = 0
+    feeds_total: int = 0
+    feeds_ok: int = 0
+    feeds_fail: int = 0
+    items_ingested: int = 0
+    items_deduped: int = 0
+    items_cached: int = 0
+    dedupe_rate: float = 0.0
+    last_refresh_ms: int = 0
+    last_refresh_at: Optional[datetime] = None
+    last_errors: List[str] = Field(default_factory=list)
+
+
+class TranslationCache:
+    def __init__(self, max_size: int = 500):
+        self._cache: OrderedDict[str, str] = OrderedDict()
+        self._max_size = max_size
+
+    def get(self, key: str) -> Optional[str]:
+        if key in self._cache:
+            self._cache.move_to_end(key)
+            return self._cache[key]
+        return None
+
+    def set(self, key: str, value: str) -> None:
+        if key in self._cache:
+            self._cache.move_to_end(key)
+        self._cache[key] = value
+        if len(self._cache) > self._max_size:
+            self._cache.popitem(last=False)
 
 
 app = FastAPI(
     title="MADERO INFONEWS",
     description="Coleta notícias de segurança da informação via RSS, categoriza e publica por API.",
-    version="1.0.0",
+    version="1.1.0",
 )
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -101,6 +138,10 @@ MAX_ITEMS_PER_SOURCE = _env_int("MAX_ITEMS_PER_SOURCE", 80, minimum=10, maximum=
 CURATION_WINDOW_DAYS = _env_int("CURATION_WINDOW_DAYS", 7, minimum=1, maximum=30)
 CURATION_MIN_ITEMS = _env_int("CURATION_MIN_ITEMS", 5, minimum=1, maximum=100)
 CURATION_MIN_RELEVANCE_RATIO = _env_float("CURATION_MIN_RELEVANCE_RATIO", 0.35, minimum=0.0, maximum=1.0)
+TRANSLATION_CACHE_MAX = _env_int("TRANSLATION_CACHE_MAX", 500, minimum=50, maximum=5000)
+FEED_RETRY_ATTEMPTS = _env_int("FEED_RETRY_ATTEMPTS", 2, minimum=0, maximum=5)
+FEED_RETRY_DELAY_SECONDS = _env_int("FEED_RETRY_DELAY_SECONDS", 2, minimum=1, maximum=10)
+GOVERNANCE_API_KEY = os.getenv("GOVERNANCE_API_KEY", "")
 
 logger = logging.getLogger("infosec-news-agent")
 if not logger.handlers:
@@ -112,21 +153,9 @@ _last_refresh_errors: List[str] = []
 _refresh_lock = asyncio.Lock()
 _refresh_task: Optional[asyncio.Task] = None
 CVE_PATTERN = re.compile(r"\bCVE-\d{4}-\d{4,7}\b", re.IGNORECASE)
-_translation_cache: Dict[str, str] = {}
+_translation_cache = TranslationCache(max_size=TRANSLATION_CACHE_MAX)
 _source_policy_overrides: Dict[str, dict] = {}
-_metrics: Dict[str, object] = {
-    "refresh_runs": 0,
-    "feeds_total": 0,
-    "feeds_ok": 0,
-    "feeds_fail": 0,
-    "items_ingested": 0,
-    "items_deduped": 0,
-    "items_cached": 0,
-    "dedupe_rate": 0.0,
-    "last_refresh_ms": 0,
-    "last_refresh_at": None,
-    "last_errors": [],
-}
+_metrics = MetricsModel()
 OSINT_AREA_KEYWORDS: Dict[str, List[str]] = {
     "username": ["username", "alias", "handle", "whatsmyname", "sherlock"],
     "email": ["email", "mail", "ghunt", "holehe", "hibp"],
@@ -137,6 +166,17 @@ OSINT_AREA_KEYWORDS: Dict[str, List[str]] = {
 }
 
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
+
+
+def _verify_governance_key(authorization: Optional[str] = Header(None)) -> bool:
+    if not GOVERNANCE_API_KEY:
+        return True
+    if not authorization:
+        return False
+    scheme, _, token = authorization.partition(" ")
+    if scheme.lower() != "bearer":
+        return False
+    return hmac.compare_digest(token, GOVERNANCE_API_KEY)
 
 
 def _safe_text(value: Optional[str]) -> str:
@@ -369,8 +409,10 @@ async def _translate_to_ptbr(
     normalized = _normalize_whitespace(text)
     if not normalized:
         return normalized
-    if normalized in _translation_cache:
-        return _translation_cache[normalized]
+
+    cached = _translation_cache.get(normalized)
+    if cached is not None:
+        return cached
 
     url = (
         "https://translate.googleapis.com/translate_a/single?client=gtx"
@@ -391,7 +433,7 @@ async def _translate_to_ptbr(
     except Exception:
         translated = normalized
 
-    _translation_cache[normalized] = translated
+    _translation_cache.set(normalized, translated)
     return translated
 
 
@@ -411,6 +453,23 @@ async def _apply_ptbr_translation(items: List[NewsItem], timeout_seconds: int = 
                 )
 
         return list(await asyncio.gather(*[_translate_item(item) for item in items]))
+
+
+async def _fetch_source_with_retry(
+    source: SourceConfig,
+    timeout_seconds: int,
+    client: httpx.AsyncClient,
+) -> List[NewsItem]:
+    last_error: Optional[Exception] = None
+    for attempt in range(1 + FEED_RETRY_ATTEMPTS):
+        try:
+            return await _fetch_source(source, timeout_seconds, client)
+        except Exception as e:
+            last_error = e
+            if attempt < FEED_RETRY_ATTEMPTS:
+                delay = FEED_RETRY_DELAY_SECONDS * (2 ** attempt)
+                await asyncio.sleep(delay)
+    raise last_error  # type: ignore[misc]
 
 
 async def _fetch_source(source: SourceConfig, timeout_seconds: int, client: httpx.AsyncClient) -> List[NewsItem]:
@@ -508,10 +567,10 @@ async def _fetch_source(source: SourceConfig, timeout_seconds: int, client: http
 def _dedupe_and_sort(items: List[NewsItem]) -> List[NewsItem]:
     sorted_items = sorted(items, key=lambda item: item.published_at, reverse=True)
 
+    seen_links: set[str] = set()
+    seen_titles: set[str] = set()
+    seen_fingerprints: set[str] = set()
     unique_items: List[NewsItem] = []
-    seen_links = set()
-    seen_titles = set()
-    seen_fingerprints = set()
 
     for item in sorted_items:
         link_key = _normalize_link(item.link)
@@ -542,7 +601,7 @@ async def _refresh_news_cache(timeout_seconds: int = 15) -> None:
         t0 = time.perf_counter()
         active_sources = [source for source in SOURCE_REGISTRY if source.feed_url]
         async with httpx.AsyncClient(follow_redirects=True) as client:
-            tasks = [_fetch_source(source, timeout_seconds=timeout_seconds, client=client) for source in active_sources]
+            tasks = [_fetch_source_with_retry(source, timeout_seconds=timeout_seconds, client=client) for source in active_sources]
             results = await asyncio.gather(*tasks, return_exceptions=True)
 
         all_items: List[NewsItem] = []
@@ -569,21 +628,20 @@ async def _refresh_news_cache(timeout_seconds: int = 15) -> None:
         dedupe_rate = round((deduped / ingested), 4) if ingested else 0.0
         refresh_ms = int((time.perf_counter() - t0) * 1000)
 
-        _metrics.update(
-            {
-                "refresh_runs": int(_metrics.get("refresh_runs", 0)) + 1,
-                "feeds_total": feeds_total,
-                "feeds_ok": feeds_ok,
-                "feeds_fail": feeds_fail,
-                "items_ingested": ingested,
-                "items_deduped": deduped,
-                "items_cached": len(_cached_news),
-                "dedupe_rate": dedupe_rate,
-                "last_refresh_ms": refresh_ms,
-                "last_refresh_at": _last_refresh_at,
-                "last_errors": errors[:20],
-            }
+        _metrics = MetricsModel(
+            refresh_runs=_metrics.refresh_runs + 1,
+            feeds_total=feeds_total,
+            feeds_ok=feeds_ok,
+            feeds_fail=feeds_fail,
+            items_ingested=ingested,
+            items_deduped=deduped,
+            items_cached=len(_cached_news),
+            dedupe_rate=dedupe_rate,
+            last_refresh_ms=refresh_ms,
+            last_refresh_at=_last_refresh_at,
+            last_errors=errors[:20],
         )
+
         logger.info(
             json.dumps(
                 {
@@ -610,22 +668,26 @@ async def _refresh_loop() -> None:
         await asyncio.sleep(REFRESH_INTERVAL_SECONDS)
 
 
-@app.on_event("startup")
-async def startup() -> None:
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     global _refresh_task, _source_policy_overrides
     _source_policy_overrides = _load_source_policy_overrides()
     await _refresh_news_cache(timeout_seconds=20)
     _refresh_task = asyncio.create_task(_refresh_loop())
-
-
-@app.on_event("shutdown")
-async def shutdown() -> None:
-    global _refresh_task
+    yield
     if _refresh_task is not None:
         _refresh_task.cancel()
         with contextlib.suppress(asyncio.CancelledError):
             await _refresh_task
         _refresh_task = None
+
+
+app = FastAPI(
+    title="MADERO INFONEWS",
+    description="Coleta notícias de segurança da informação via RSS, categoriza e publica por API.",
+    version="1.1.0",
+    lifespan=lifespan,
+)
 
 
 @app.get("/health")
@@ -634,8 +696,8 @@ async def health() -> dict:
         "status": "ok",
         "service": "infosec-news-agent",
         "last_refresh_at": _last_refresh_at,
-        "feeds_ok": _metrics.get("feeds_ok", 0),
-        "feeds_total": _metrics.get("feeds_total", 0),
+        "feeds_ok": _metrics.feeds_ok,
+        "feeds_total": _metrics.feeds_total,
     }
 
 
@@ -643,7 +705,7 @@ async def health() -> dict:
 async def metrics() -> dict:
     return {
         "service": "infosec-news-agent",
-        "refresh": _metrics,
+        "refresh": _metrics.model_dump(),
         "last_refresh_errors": _last_refresh_errors,
     }
 
@@ -733,7 +795,13 @@ async def governance_policies() -> dict:
 
 
 @app.put("/governance/policies")
-async def update_governance_policies(payload: List[SourcePolicyOverride]) -> dict:
+async def update_governance_policies(
+    payload: List[SourcePolicyOverride],
+    authorized: bool = Depends(_verify_governance_key),
+) -> dict:
+    if not authorized:
+        raise HTTPException(status_code=401, detail="Chave de API inválida ou ausente")
+
     global _source_policy_overrides
     valid_ids = {source.id for source in SOURCE_REGISTRY}
     allowed_profiles = {"strict", "balanced", "wide"}

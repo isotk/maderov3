@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from typing import Dict, List
 
@@ -8,11 +9,12 @@ from typing import Dict, List
 class CategoryRule:
     name: str
     keywords: List[str]
+    word_boundary: bool = False
 
 
 CATEGORY_RULES = [
     CategoryRule("Ransomware", ["ransomware", "extortion", "decryptor", "lockbit", "conti"]),
-    CategoryRule("Vulnerabilidades", ["cve-", "vulnerability", "zero-day", "patch", "exploit"]),
+    CategoryRule("Vulnerabilidades", ["cve-", "vulnerability", "zero-day", "zero day", "patch tuesday", "exploit"]),
     CategoryRule("Malware", ["malware", "trojan", "spyware", "worm", "botnet", "stealer"]),
     CategoryRule(
         "OSINT",
@@ -26,8 +28,8 @@ CATEGORY_RULES = [
             "shodan",
             "censys",
             "whois",
-            "dns",
-            "subdomain",
+            "dns enumeration",
+            "subdomain enumeration",
             "passive dns",
             "geolocation",
             "metadata",
@@ -56,23 +58,36 @@ CATEGORY_RULES = [
             "underground forum",
         ],
     ),
-    CategoryRule("Cloud Security", ["cloud", "aws", "azure", "gcp", "kubernetes", "container"]),
+    CategoryRule("Cloud Security", ["cloud security", "aws security", "azure security", "gcp security", "kubernetes security", "container security"]),
     CategoryRule(
         "IA",
         [
             "artificial intelligence",
-            "ai",
+            "generative ai",
             "genai",
-            "llm",
             "large language model",
+            "llm",
             "machine learning",
+            "deep learning",
             "prompt injection",
             "model poisoning",
             "ai security",
+            "ai safety",
+            "ai alignment",
+            "ai governance",
+            "ai regulation",
             "openai",
+            "deepmind",
+            "anthropic",
+            "chatgpt",
+            "claude",
             "gemini",
             "copilot",
+            "llama",
+            "mistral",
+            "hugging face",
         ],
+        word_boundary=True,
     ),
     CategoryRule("Threat Intelligence", ["apt", "ioc", "threat actor", "campaign", "attribution"]),
     CategoryRule(
@@ -82,7 +97,6 @@ CATEGORY_RULES = [
             "siem",
             "edr",
             "xdr",
-            "detection",
             "detection engineering",
             "incident response",
             "hardening",
@@ -97,12 +111,24 @@ CATEGORY_RULES = [
 ]
 
 
+def _word_boundary_match(keyword: str, text: str) -> bool:
+    pattern = r'\b' + re.escape(keyword) + r'\b'
+    return bool(re.search(pattern, text, re.IGNORECASE))
+
+
 def categorize_text(text: str) -> str:
     normalized = text.lower()
     scores: Dict[str, int] = {}
 
     for rule in CATEGORY_RULES:
-        count = sum(1 for keyword in rule.keywords if keyword in normalized)
+        count = 0
+        for keyword in rule.keywords:
+            if rule.word_boundary:
+                if _word_boundary_match(keyword, normalized):
+                    count += 1
+            else:
+                if keyword in normalized:
+                    count += 1
         if count:
             scores[rule.name] = count
 

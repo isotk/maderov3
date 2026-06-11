@@ -7,3 +7,18 @@ services:
     ports:
       - "8000:8000"
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    environment:
+      - REFRESH_INTERVAL_SECONDS=${REFRESH_INTERVAL_SECONDS:-300}
+      - MAX_CACHE_ITEMS=${MAX_CACHE_ITEMS:-600}
+      - MAX_ITEMS_PER_SOURCE=${MAX_ITEMS_PER_SOURCE:-80}
+      - GOVERNANCE_API_KEY=${GOVERNANCE_API_KEY:-}
+      - TRANSLATION_CACHE_MAX=${TRANSLATION_CACHE_MAX:-500}
+      - FEED_RETRY_ATTEMPTS=${FEED_RETRY_ATTEMPTS:-2}
